@@ -1,4 +1,4 @@
-package search;
+package search.hillclimbing;
 
 public class Hillclimbing {
 
