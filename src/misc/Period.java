@@ -1,5 +1,13 @@
 package misc;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+
 /**
  * All fields shown by the GUI taken from excel template
  * Use or extend this class for your search algorithm
@@ -7,8 +15,10 @@ package misc;
  * @author chris
  *
  */
-public class Period {
+public class Period implements Serializable{
 
+	private static final long serialVersionUID = 2365994127140139546L;
+	
 	protected int time;
 	protected int income;
 	protected int interesst;
@@ -193,6 +203,11 @@ public class Period {
 		this.periodMoney = periodMoney;
 	}
 	
+	public void setLossCarryback(int lossCarryback) {
+		this.lossCarryback = lossCarryback > 0 ? -1 * lossCarryback : lossCarryback;;
+		this.lossCarryforward = -1 * (income + interesst - lossCarryback);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -252,5 +267,18 @@ public class Period {
 		if (time != other.time)
 			return false;
 		return true;
+	}
+	
+	public Period copy() throws IOException, ClassNotFoundException {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(bos);
+		oos.writeObject(this);
+		oos.flush();
+		oos.close();
+		bos.close();
+		byte[] byteData = bos.toByteArray();
+		ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
+		Period  period = (Period) new ObjectInputStream(bais).readObject();
+		return period;
 	}
 }
