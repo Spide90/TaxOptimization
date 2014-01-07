@@ -3,25 +3,18 @@ package gui;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+import javax.swing.table.AbstractTableModel;
 
-public class InputTableModell implements TableModel{
+public class InputTableModell extends AbstractTableModel {
 
-	private List<TableModelListener> listeners;
-	
+	private static final long serialVersionUID = 5580172268854002274L;
+
 	private List<Integer> periods;
 	private List<Integer> incomes;
-	
+
 	public InputTableModell() {
-		listeners = new LinkedList<TableModelListener>();
 		periods = new LinkedList<Integer>();
 		incomes = new LinkedList<Integer>();
-	}
-	
-	@Override
-	public void addTableModelListener(TableModelListener l) {
-		listeners.add(l);
 	}
 
 	@Override
@@ -35,7 +28,7 @@ public class InputTableModell implements TableModel{
 
 	@Override
 	public int getColumnCount() {
-		return periods.size();
+		return periods.size() + 1;
 	}
 
 	@Override
@@ -43,7 +36,7 @@ public class InputTableModell implements TableModel{
 		if (columnIndex == 0) {
 			return "labels";
 		} else {
-			return String.valueOf(periods.get(columnIndex));
+			return String.valueOf(periods.get(columnIndex - 1));
 		}
 	}
 
@@ -62,9 +55,9 @@ public class InputTableModell implements TableModel{
 			}
 		} else {
 			if (rowIndex == 0) {
-				return periods.get(rowIndex - 1);
+				return periods.get(columnIndex - 1);
 			} else {
-				return incomes.get(rowIndex - 1);
+				return incomes.get(columnIndex - 1);
 			}
 		}
 	}
@@ -75,17 +68,27 @@ public class InputTableModell implements TableModel{
 	}
 
 	@Override
-	public void removeTableModelListener(TableModelListener l) {
-		listeners.remove(l);
-	}
-
-	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		if (rowIndex == 0) {
-			periods.set(columnIndex - 1, (int) aValue);
+			periods.set(columnIndex, (int) aValue);
 		} else {
-			incomes.set(columnIndex - 1, (int) aValue);
+			incomes.set(columnIndex, (int) aValue);
 		}
+		fireTableStructureChanged();
 	}
 
+	public void updatePeriodNumber(int periodNumber) {
+		if (periods.size() < periodNumber) {
+			for (int i = periods.size(); i < periodNumber; i++) {
+				periods.add(i + 1);
+				incomes.add(0);
+			}
+		} else {
+			for (int i = periods.size(); i > periodNumber; i--) {
+				periods.remove(i - 1);
+				incomes.remove(i - 1);
+			}
+		}
+		fireTableStructureChanged();
+	}
 }

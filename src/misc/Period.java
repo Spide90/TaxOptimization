@@ -15,7 +15,7 @@ import java.io.Serializable;
  * @author chris
  *
  */
-public class Period implements Serializable{
+public class Period implements Serializable {
 
 	private static final long serialVersionUID = 2365994127140139546L;
 	
