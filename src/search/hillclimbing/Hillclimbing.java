@@ -26,18 +26,19 @@ public class Hillclimbing extends Search {
 
 	@Override
 	public void run() {
-		
+		setDecisions();
 	}
 
 	public void setDecisions() {
-		for (int i = 0; i < periods.size(); i++) {
-			if (periods.get(i).getIncome() < 0) {
-				periods.get(i).setDecision(Decision.SHARED);
-				TaxFormula.calculatePeriod(null, periods.get(i), periods.get(i + 1));
-			} else {
-				
+		for (int i = 1; i < periods.size(); i++) {
+			Period predesseccor = i - 1 < 0 ? null : periods.get(i - 1);
+			Period successor = i + 1 == periods.size() ? null : periods.get(i + 1);
+			if (predesseccor != null) {
+				periods.get(i).setInteresst((int) (predesseccor.getPeriodMoney() *  interesstRate));
 			}
+			TaxFormula.calculatePeriod(predesseccor, periods.get(i), successor);
 		}
+		frame.updatePeriodTable(periods);
 	}
 
 }

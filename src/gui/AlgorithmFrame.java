@@ -115,4 +115,12 @@ public class AlgorithmFrame extends JFrame{
 		console.setText(message);
 	}
 	
+	/**
+	 * append a debug message to the console
+	 * 
+	 * @param message the message to be printed
+	 */
+	public void appendDebugMessage(String message) {
+		console.setText(console.getText()+"\n\n"+message);
+	}
 }
