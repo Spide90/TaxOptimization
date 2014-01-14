@@ -6,7 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -23,6 +23,7 @@ import javax.swing.event.ChangeListener;
 import search.Search;
 import search.hillclimbing.Hillclimbing;
 import search.monteCarlo.MonteCarlo;
+import search.monteCarlo.MonteDaniel;
 import search.particleSwarm.ParticleSwarm;
 import misc.Decision;
 import misc.Period;
@@ -129,7 +130,7 @@ public class Mainframe extends JFrame{
 		
 		gbc.gridx = 0;
 		buttonImport = new JButton("Import");
-		buttonImport.addActionListener(ImportAction());
+		buttonImport.addActionListener(importAction());
 		layout.setConstraints(buttonImport, gbc);
 		add(buttonImport);
 		
@@ -160,8 +161,9 @@ public class Mainframe extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<Period> periods = new LinkedList<>();
-				Period period = new Period(0, Integer.valueOf(fieldStartMoney.getText()), Decision.SHARED, 0);
+				List<Period> periods = new ArrayList<>();
+				Period period = new Period(0, 0, 0, Decision.SHARED, 0);
+				period.setPeriodMoney(Integer.valueOf(fieldStartMoney.getText()));
 				periods.add(period);
 				for (int i = 1; i < inputTableModell.getColumnCount(); i++) {
 					period = new Period(Integer.valueOf(inputTableModell.getValueAt(0, i).toString()), Integer.valueOf(inputTableModell.getValueAt(1, i).toString()), Decision.SHARED, 0);
@@ -173,10 +175,10 @@ public class Mainframe extends JFrame{
 					search = new Hillclimbing(periods, Double.valueOf(fieldInterestRate.getText()));
 					break;
 				case "Monte Carlo":
-					search = new MonteCarlo();
+					search = new MonteDaniel(periods, Float.valueOf(fieldInterestRate.getText()), 100000);
 					break;
 				case "Particle Swarm":
-					search = new ParticleSwarm();
+					search = new ParticleSwarm(periods, Float.valueOf(fieldInterestRate.getText()), 100, 100);
 					break;
 				default:
 					break;
@@ -187,7 +189,7 @@ public class Mainframe extends JFrame{
 		return runActionListener;
 	}
 	
-	private ActionListener ImportAction() {
+	private ActionListener importAction() {
 		ActionListener importActionListener = new ActionListener() {
 			
 			@Override

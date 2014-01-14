@@ -1,5 +1,7 @@
 package misc;
 
+import java.util.List;
+
 /**
  * Tax formulas taken from excel template
  * 
@@ -47,7 +49,7 @@ public class TaxFormula {
 	 *            the current period
 	 * @param successor
 	 *            the next period, if there is no next period (null) a neutral
-	 *            period will be created
+	 *            period will be created. From the successor only the loss carryback is used.
 	 * @return the taxable profit
 	 */
 	public static int calculateTaxableProfit(Period predesseccor,
@@ -58,7 +60,7 @@ public class TaxFormula {
 			predesseccor.setPeriodMoney(current.getPeriodMoney());
 		}
 		if (successor == null) {
-			successor = new Period(current.getTime() - 1, 0, 0,
+			successor = new Period(current.getTime() + 1, 0, 0,
 					Decision.SHARED, 0);
 		}
 		int taxableProfit = 0;
@@ -175,41 +177,54 @@ public class TaxFormula {
 		current.setPeriodMoney(predesseccor.getPeriodMoney()
 				+ current.getIncomeAndInteresst() - current.getTaxes());
 	}
+	
+	
+	/**
+	 *  updates all values of the periods, that are dynamically computed.
+	 */
+	public static void updatePeriods(List<Period> periods, float interesstRate) {
+		// period 0 only contains the start money in periodMoney
+		for (int i=1; i<periods.size(); ++i) {
+			periods.get(i).setInteresst((int)(interesstRate * periods.get(i-1).getPeriodMoney()));
+			TaxFormula.calculatePeriod(periods.get(i-1), periods.get(i), i+1>=periods.size()? null : periods.get(i+1));
+		}
+	}
+	
 
 //formula tests 
 	
-//	public static void main(String[] args) {
-//		Period p0 = new Period(0, 0, 0, Decision.SHARED, 0);
-//		p0.setPeriodMoney(600000);
-//		Period p1 = new Period(1, 0, (int) (p0.getPeriodMoney() * 0.08),
-//				Decision.SHARED, 0);
-//		Period p2 = new Period(2, -150000, 0, Decision.DIVIDED, -18550);
-//		Period p3 = new Period(3, 50000, 0, Decision.SHARED, 0);
-//		Period p4 = new Period(4, 0, 0, Decision.SHARED, 0);
-//		Period p5 = new Period(5, -150000, 0, Decision.SHARED, -21456);
-//		Period p6 = new Period(6, 50000, 0, Decision.DIVIDED, 0);
-//
-//		calculatePeriod(p0, p1, p2);
-//		System.out.println("period 1: " + p1.getPeriodMoney());
-//	
-//		p2.setInteresst((int) (p1.getPeriodMoney() * 0.08));
-//		calculatePeriod(p1, p2, p3);
-//		System.out.println("period 2: " + p2.getPeriodMoney());
-//		
-//		p3.setInteresst((int) (p2.getPeriodMoney() * 0.08));
-//		calculatePeriod(p2, p3, p4);
-//		System.out.println("period 3: " + p3.getPeriodMoney());
-//		
-//		p4.setInteresst((int) (p3.getPeriodMoney() * 0.08));
-//		calculatePeriod(p3, p4, p5);
-//		System.out.println("period 4: " + p4.getPeriodMoney());
-//		
-//		p5.setInteresst((int) (p4.getPeriodMoney() * 0.08));
-//		calculatePeriod(p4, p5, p6);
-//		System.out.println("period 5: " + p5.getPeriodMoney());
-//		
-//		p6.setInteresst((int) (p5.getPeriodMoney() * 0.08));		
-//		calculatePeriod(p5, p6, null);
-//		System.out.println("period 6: " + p6.getPeriodMoney());
-//	}
+	public static void main(String[] args) {
+		Period p0 = new Period(0, 0, 0, Decision.SHARED, 0);
+		p0.setPeriodMoney(600000);
+		Period p1 = new Period(1, 0, (int) (p0.getPeriodMoney() * 0.08),
+				Decision.SHARED, 0);
+		Period p2 = new Period(2, -150000, 0, Decision.DIVIDED, -18550);
+		Period p3 = new Period(3, 50000, 0, Decision.SHARED, 0);
+		Period p4 = new Period(4, 0, 0, Decision.SHARED, 0);
+		Period p5 = new Period(5, -150000, 0, Decision.SHARED, -21456);
+		Period p6 = new Period(6, 50000, 0, Decision.DIVIDED, 0);
+
+		calculatePeriod(p0, p1, p2);
+		System.out.println("period 1: " + p1.getPeriodMoney());
+	
+		p2.setInteresst((int) (p1.getPeriodMoney() * 0.08));
+		calculatePeriod(p1, p2, p3);
+		System.out.println("period 2: " + p2.getPeriodMoney());
+		
+		p3.setInteresst((int) (p2.getPeriodMoney() * 0.08));
+		calculatePeriod(p2, p3, p4);
+		System.out.println("period 3: " + p3.getPeriodMoney());
+		
+		p4.setInteresst((int) (p3.getPeriodMoney() * 0.08));
+		calculatePeriod(p3, p4, p5);
+		System.out.println("period 4: " + p4.getPeriodMoney());
+		
+		p5.setInteresst((int) (p4.getPeriodMoney() * 0.08));
+		calculatePeriod(p4, p5, p6);
+		System.out.println("period 5: " + p5.getPeriodMoney());
+		
+		p6.setInteresst((int) (p5.getPeriodMoney() * 0.08));		
+		calculatePeriod(p5, p6, null);
+		System.out.println("period 6: " + p6.getPeriodMoney());
+	}
 }

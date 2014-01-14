@@ -21,7 +21,7 @@ public class Period implements Serializable {
 	
 	protected int time;
 	protected int income;
-	protected int interesst;
+	protected int interesst; // this is not the interest rate, but interrestRate * periodMoney of the previous period
 	protected Decision decision;
 	protected int maximumLoss;
 	protected int taxableProfit;
@@ -201,6 +201,14 @@ public class Period implements Serializable {
 
 	public void setPeriodMoney(int periodMoney) {
 		this.periodMoney = periodMoney;
+	}
+	
+	public void setDecision(Decision decision) {
+		this.decision = decision;
+	}
+	
+	public void setDecision(float decisionValue) {
+		this.decision = Math.abs(decisionValue-0.0f)<Math.abs(decisionValue-1.0f)? Decision.SHARED : Decision.DIVIDED;
 	}
 	
 	public void setLossCarryback(int lossCarryback) {
