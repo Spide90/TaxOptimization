@@ -208,6 +208,10 @@ public class Period implements Serializable {
 		this.lossCarryforward = -1 * (income + interesst - lossCarryback);
 	}
 	
+	public void setDecision(Decision decision) {
+		this.decision = decision;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

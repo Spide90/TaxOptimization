@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
@@ -45,16 +46,13 @@ public class Mainframe extends JFrame{
 	
 	public Mainframe() {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setPreferredSize(new Dimension(500, 200));
+		setPreferredSize(new Dimension(500, 175));
 		setTitle("Super Rückträger");
 		init();
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
-	
-	//TODO set size for textfields
-	//TODO set size of table
 	
 	private void init() {
 		GridBagLayout layout = new GridBagLayout();
@@ -100,6 +98,7 @@ public class Mainframe extends JFrame{
 		inputTableModell = new InputTableModell();
 		inputTableModell.updatePeriodNumber((int) fieldPeriods.getValue());
 		inputTable.setModel(inputTableModell);
+		inputTable.setTableHeader(null);
 		inputTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		JScrollPane scrollPane = new JScrollPane(inputTable);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -160,6 +159,13 @@ public class Mainframe extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				try {
+					Integer.parseInt(fieldStartMoney.getText());
+					Double.parseDouble(fieldInterestRate.getText());
+				} catch (NumberFormatException nfe) {
+					JOptionPane.showMessageDialog(Mainframe.this, "Error in field start money or interesst rate", "ERROR!", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				List<Period> periods = new LinkedList<>();
 				Period period = new Period(0, Integer.valueOf(fieldStartMoney.getText()), Decision.SHARED, 0);
 				periods.add(period);

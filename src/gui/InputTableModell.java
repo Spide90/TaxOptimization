@@ -70,9 +70,9 @@ public class InputTableModell extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		if (rowIndex == 0) {
-			periods.set(columnIndex, (int) aValue);
+			periods.set(columnIndex - 1, (int) aValue);
 		} else {
-			incomes.set(columnIndex, (int) aValue);
+			incomes.set(columnIndex - 1, (int) aValue);
 		}
 		fireTableStructureChanged();
 	}
