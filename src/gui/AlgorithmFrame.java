@@ -1,14 +1,17 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
@@ -50,6 +53,8 @@ public class AlgorithmFrame extends JFrame{
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
+		gbc.insets = new Insets(3, 3, 3, 3);
+		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.BOTH;
@@ -76,11 +81,22 @@ public class AlgorithmFrame extends JFrame{
 		gbc.gridy = 2;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
+		gbc.gridwidth = 2;
 		gbc.fill = GridBagConstraints.BOTH;
 		console = new JTextPane();
 		console.setVisible(false);
 		layout.setConstraints(console, gbc);
 		add(console);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 2;
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.PINK);
+		panel.setPreferredSize(new Dimension(300, 500));
+		layout.setConstraints(panel, gbc);
+		add(panel);
 		
 		pack();
 		setVisible(true);
