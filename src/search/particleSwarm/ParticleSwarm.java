@@ -65,7 +65,7 @@ public class ParticleSwarm extends Search{
 		for (int i=1; i<numberOfParticles; ++i) {
 			Particle newParticle = new Particle(periods, interesstRate); // generate random particle
 			particles.add(newParticle);
-			if (newParticle.getBestParticlePosition().outcome > globalBestPosition.outcome)
+			if (newParticle.getBestParticlePosition().getOutcome() > globalBestPosition.getOutcome())
 				globalBestPosition.copy(newParticle.getBestParticlePosition());
 		}
 		
@@ -78,7 +78,7 @@ public class ParticleSwarm extends Search{
 	private void iterationStep() {
 		for (Particle particle : particles) {
 			if (particle.updateVelocitiesAndPositions(globalBestPosition)) // if true, best particle position has changed
-				if (particle.getBestParticlePosition().outcome > globalBestPosition.outcome)
+				if (particle.getBestParticlePosition().getOutcome() > globalBestPosition.getOutcome())
 					globalBestPosition.copy(particle.getBestParticlePosition());
 		}
 	}
@@ -87,8 +87,8 @@ public class ParticleSwarm extends Search{
 	private void updateGui() {
 		// apply the best values to the periods
 		for (int i=1; i<periods.size(); ++i) {
-			periods.get(i).setDecision(globalBestPosition.decisions[i]);
-			periods.get(i).setLossCarryback(Math.round(globalBestPosition.carrybacks[i]));
+			periods.get(i).setDecision(globalBestPosition.getDecision(i));
+			periods.get(i).setLossCarryback(Math.round(globalBestPosition.getCarryback(i)));
 		}
 		TaxFormula.updatePeriods(periods, interesstRate);
 		gui.updatePeriodTable(periods);

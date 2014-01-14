@@ -32,12 +32,11 @@ public class MonteDaniel extends Search {
 	
 	@Override
 	public void run() {
-		Particle firstParticle = new Particle(periods, interesstRate); // generate random particle
-		bestResult = new ParticlePosition(firstParticle.getBestParticlePosition());
+		bestResult = new ParticlePosition(periods, interesstRate);
 		for (int i=0; i<numberOfIterations; ++i) {
-			Particle newParticle = new Particle(periods, interesstRate); // generate random particle
-			if (newParticle.getBestParticlePosition().outcome > bestResult.outcome)
-				bestResult.copy(newParticle.getBestParticlePosition());
+			ParticlePosition newTry = new ParticlePosition(periods, interesstRate); // generate random particle
+			if (newTry.getOutcome() > bestResult.getOutcome())
+				bestResult.copy(newTry);
 		}
 		updateGui();
 		gui.setTitle(gui.getTitle()+ " - fertig");
@@ -47,8 +46,8 @@ public class MonteDaniel extends Search {
 	private void updateGui() {
 		// apply the best values to the periods
 		for (int i=1; i<periods.size(); ++i) {
-			periods.get(i).setDecision(bestResult.decisions[i]);
-			periods.get(i).setLossCarryback(Math.round(bestResult.carrybacks[i]));
+			periods.get(i).setDecision(bestResult.getDecision(i));
+			periods.get(i).setLossCarryback(Math.round(bestResult.getCarryback(i)));
 		}
 		TaxFormula.updatePeriods(periods, interesstRate);
 		gui.updatePeriodTable(periods);
