@@ -184,7 +184,7 @@ public class Mainframe extends JFrame{
 					search = new MonteDaniel(periods, Float.valueOf(fieldInterestRate.getText()), 100000);
 					break;
 				case "Particle Swarm":
-					search = new ParticleSwarm(periods, Float.valueOf(fieldInterestRate.getText()), 100, 100);
+					search = new ParticleSwarm(periods, Float.valueOf(fieldInterestRate.getText()), 100, 100, true);
 					break;
 				default:
 					break;
