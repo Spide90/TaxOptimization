@@ -26,8 +26,7 @@ public class MonteDaniel extends Search {
 		this.periods =  periods;
 		this.interesstRate = interesstRate;
 		this.numberOfIterations = numberOfIterations;
-		gui = new AlgorithmFrame(periods);
-		gui.setTitle("Monte Daniel von Zott");
+		gui = new AlgorithmFrame(periods, "Monte Carlo");
 	}
 	
 	@Override
@@ -39,7 +38,6 @@ public class MonteDaniel extends Search {
 				bestResult.copy(newTry);
 		}
 		updateGui();
-		gui.setTitle(gui.getTitle()+ " - fertig");
 	}
 	
 	

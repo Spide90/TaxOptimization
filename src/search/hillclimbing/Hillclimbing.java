@@ -20,8 +20,7 @@ public class Hillclimbing extends Search {
 	public Hillclimbing(List<Period> periods, double interesstRate) {
 		this.periods = periods;
 		this.interesstRate = interesstRate;
-		frame = new AlgorithmFrame(periods);
-		frame.setTitle("Hillclimbing");
+		frame = new AlgorithmFrame(periods, "Hillclimbing");
 	}
 
 	@Override

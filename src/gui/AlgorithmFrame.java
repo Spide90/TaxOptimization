@@ -1,13 +1,17 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,7 +20,23 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
 
+import de.erichseifert.gral.data.DataSeries;
+import de.erichseifert.gral.data.DataSource;
+import de.erichseifert.gral.data.DataTable;
+import de.erichseifert.gral.plots.XYPlot;
+import de.erichseifert.gral.plots.areas.AreaRenderer;
+import de.erichseifert.gral.plots.areas.DefaultAreaRenderer2D;
+import de.erichseifert.gral.plots.areas.LineAreaRenderer2D;
+import de.erichseifert.gral.plots.axes.Axis;
+import de.erichseifert.gral.plots.lines.DefaultLineRenderer2D;
+import de.erichseifert.gral.plots.lines.LineRenderer;
+import de.erichseifert.gral.plots.points.DefaultPointRenderer2D;
+import de.erichseifert.gral.plots.points.PointRenderer;
+import de.erichseifert.gral.ui.InteractivePanel;
+import de.erichseifert.gral.util.GraphicsUtils;
+import de.erichseifert.gral.util.Insets2D;
 import misc.Period;
+
 
 /**
  * @author chris
@@ -27,14 +47,19 @@ public class AlgorithmFrame extends JFrame{
 	private static final long serialVersionUID = -8287674932793764458L;
 	
 	private List<Period> periods;
+	private String algorithmName;
 	
 	private JTable periodTable;
 	private PeriodTableModell periodTableModell;
 	private JTextPane console;
 	private JButton buttonShowConsole;
+	private JPanel plotsPanel;
+	
+	private final Dimension preferredPlotSize = new Dimension(300,300);
 
-	public AlgorithmFrame(List<Period> periods) {
+	public AlgorithmFrame(List<Period> periods, String algorithmName) {
 		this.periods = periods;
+		this.algorithmName = algorithmName;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setPreferredSize(new Dimension(800, 300));
 		init();
@@ -92,14 +117,14 @@ public class AlgorithmFrame extends JFrame{
 		gbc.gridy = 0;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 2;
-		JPanel panel = new JPanel();
-		panel.setBackground(Color.PINK);
-		panel.setPreferredSize(new Dimension(300, 500));
-		layout.setConstraints(panel, gbc);
-		add(panel);
+		plotsPanel = new JPanel();
+		plotsPanel.setBackground(Color.PINK);
+		layout.setConstraints(plotsPanel, gbc);
+		add(plotsPanel);
 		
 		pack();
 		setVisible(true);
+		setTitle(algorithmName + " - rechnet...");
 	}
 
 	private ActionListener actionShowConsole() {
@@ -138,5 +163,56 @@ public class AlgorithmFrame extends JFrame{
 	 */
 	public void appendDebugMessage(String message) {
 		console.setText(console.getText()+"\n\n"+message);
+	}
+	
+	
+	public void updatePlots(DataSource... plotsData) {
+		plotsPanel.removeAll();
+		
+		// generate a plot for the outcome per period
+		DataTable periodsData = new DataTable(Integer.class, Integer.class);
+		for (int i=1; i<periods.size(); ++i)
+			periodsData.add(i,periods.get(i).getPeriodMoney());
+		plotsPanel.add(createLinePlot(periodsData, "Outcome per period", "Period", "Outcome", Color.blue));
+			                
+		if (algorithmName.equals("Particle Swarm")) {
+			plotsPanel.setPreferredSize(new Dimension(preferredPlotSize.height*3, preferredPlotSize.width));
+			plotsPanel.setLayout(new GridLayout(3,1));
+			plotsPanel.add(createLinePlot(plotsData[0], "Best outcome per iteration", "Iteration", "Best outcome", Color.green));
+		}
+		pack();
+	}
+
+	
+	private JPanel createLinePlot(DataSource data, String title, String xAxisLabel, String yAxisLabel, Color color) {
+		XYPlot plot = new XYPlot(data); // plot for the best outcomes per iteration
+		plot.getTitle().setText(title);
+		// set the labels of the axes
+		plot.getAxisRenderer(XYPlot.AXIS_X).setLabel(xAxisLabel);
+		plot.getAxisRenderer(XYPlot.AXIS_X).setLabel(yAxisLabel);
+		// make a margin for the axes and labels
+		plot.setInsets(new Insets2D.Double(20.0, 100.0, 60.0, 40.0));
+		LineRenderer lines = new DefaultLineRenderer2D();
+        plot.setLineRenderer(data, lines);
+        plot.setPointRenderer(data, null);
+        plot.getLineRenderer(data).setColor(color);
+       // draw the axes outside of the plot
+        plot.getAxisRenderer(XYPlot.AXIS_X).setIntersection(-Double.MAX_VALUE);
+        plot.getAxisRenderer(XYPlot.AXIS_Y).setIntersection(-Double.MAX_VALUE);
+        // set the drawn area if the value never changed (all values are the same). Otherwise it would render an empty range
+        if (data.get(1, 0).equals(data.get(1, data.getRowCount()-1))) {
+        	int value = Integer.valueOf(data.get(1, 0).toString());
+        	if (value>=0)
+        		plot.getAxis(XYPlot.AXIS_Y).setRange(0, 2.1*(value+1));
+        	else
+        		plot.getAxis(XYPlot.AXIS_Y).setRange(2.1*(value+1), 0);
+        }
+        // draw an area between the graph and the x axis
+        AreaRenderer area = new DefaultAreaRenderer2D();
+		area.setColor(GraphicsUtils.deriveWithAlpha(color, 64));
+		plot.setAreaRenderer(data, area);
+		InteractivePanel plotPanel = new InteractivePanel(plot);
+		plotPanel.setPreferredSize(preferredPlotSize);
+		return plotPanel;
 	}
 }
