@@ -25,7 +25,6 @@ import misc.Decision;
 import misc.Period;
 import search.Search;
 import search.hillclimbing.Hillclimbing;
-import search.monteCarlo.MonteCarlo;
 import search.monteCarlo.MonteDaniel;
 import search.particleSwarm.ParticleSwarm;
 

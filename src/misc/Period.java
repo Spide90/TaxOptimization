@@ -25,12 +25,16 @@ public class Period implements Serializable {
 	protected Decision decision;
 	protected int maximumLoss;
 	protected int taxableProfit;
+	protected int taxableProfitAfterLossCarryback;
 	protected double taxA;
 	protected double taxB;
 	protected int taxes;
 	protected int periodMoney;
 	protected int lossCarryback;
 	protected int lossCarryforward;
+	protected int notUsedLossCarryforward;
+	protected int taxRecalculation;
+	protected int taxRefund;
 	
 	/**
 	 * creates a new period
@@ -123,6 +127,10 @@ public class Period implements Serializable {
 		return taxableProfit;
 	}
 	
+	public int getTaxableProfitAfterLossCarryback() {
+		return taxableProfitAfterLossCarryback;
+	}
+	
 	/**
 	 * Factor to calculate taxes
 	 * see slides for more info 
@@ -175,6 +183,18 @@ public class Period implements Serializable {
 		return lossCarryforward;
 	}
 	
+	public int getNotUsedLossCarryforward() {
+		return notUsedLossCarryforward;
+	}
+	
+	public int getTaxRefund() {
+		return taxRefund;
+	}
+	
+	public int getTaxRecalculation() {
+		return taxRecalculation;
+	}
+	
 	public void setInteresst(int interesst) {
 		this.interesst = interesst;
 	}
@@ -185,6 +205,11 @@ public class Period implements Serializable {
 
 	public void setTaxableProfit(int taxableProfit) {
 		this.taxableProfit = taxableProfit;
+	}
+	
+	public void setTaxableProfitAfterLossCarryback(
+			int taxableProfitAfterLossCarryback) {
+		this.taxableProfitAfterLossCarryback = taxableProfitAfterLossCarryback;
 	}
 
 	public void setTaxA(double taxA) {
@@ -214,6 +239,19 @@ public class Period implements Serializable {
 	public void setLossCarryback(int lossCarryback) {
 		this.lossCarryback = lossCarryback > 0 ? -1 * lossCarryback : lossCarryback;;
 		this.lossCarryforward = -1 * (income + interesst - lossCarryback);
+	}
+	
+	public void setLossCarryforward(int lossCarryforward) {
+		this.lossCarryforward = lossCarryforward;
+		notUsedLossCarryforward = maximumLoss - lossCarryback - lossCarryforward;
+	}
+	
+	public void setTaxRefund(int taxRefund) {
+		this.taxRefund = taxRefund;
+	}
+	
+	public void setTaxRecalculation(int taxRecalculation) {
+		this.taxRecalculation = taxRecalculation;
 	}
 	
 	@Override
