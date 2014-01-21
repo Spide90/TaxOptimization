@@ -23,7 +23,7 @@ public class PeriodTableModell extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return 13;
+		return 17;
 	}
 
 	@Override
@@ -51,11 +51,19 @@ public class PeriodTableModell extends AbstractTableModel {
 			case 9:
 				return "Steuerzahlungen";
 			case 10:
-				return "Vermögen";
+				return "Steuern nach Verlustrücktrag";
 			case 11:
-				return "Verlustrücktrag";
+				return "Steuer Neuberechnung";
 			case 12:
-				return "verlustvortag";
+				return "Steuererstattung";
+			case 13:
+				return "Vermögen";
+			case 14:
+				return "Verlustrücktrag";
+			case 15:
+				return "Verlustvortag";
+			case 16:
+				return "Verlustvortrag übrig";
 			default:
 				throw new IndexOutOfBoundsException();
 			}
@@ -82,11 +90,19 @@ public class PeriodTableModell extends AbstractTableModel {
 			case 9:
 				return periods.get(arg1 - 1).getTaxes();
 			case 10:
-				return periods.get(arg1 - 1).getPeriodMoney();
+				return periods.get(arg1 - 1).getTaxableProfitAfterLossCarryback();
 			case 11:
-				return periods.get(arg1 - 1).getLossCarryback();
+				return periods.get(arg1 - 1).getTaxRecalculation();
 			case 12:
+				return periods.get(arg1 - 1).getTaxRefund();
+			case 13:
+				return periods.get(arg1 - 1).getPeriodMoney();
+			case 14:
+				return periods.get(arg1 - 1).getLossCarryback();
+			case 15:
 				return periods.get(arg1 - 1).getLossCarryForward();
+			case 16:
+				return periods.get(arg1 - 1).getNotUsedLossCarryforward();
 			default:
 				throw new IndexOutOfBoundsException();
 			}
