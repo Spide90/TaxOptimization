@@ -38,6 +38,7 @@ public class MonteDaniel extends Search {
 				bestResult.copy(newTry);
 		}
 		updateGui();
+		gui.setTitle("Monte Carlo - fertig");
 	}
 	
 	

@@ -52,11 +52,11 @@ public class ParticleSwarm extends Search{
 		initialization();
 		if (drawPlots)
 			plotBestOutcomesPerIteration.add(0, globalBestPosition.getOutcome());
-		System.out.println("Best outcome after initialization: "+globalBestPosition.getOutcome());
+		gui.printDebugMessage("Best outcome after initialization: "+globalBestPosition.getOutcome());
 		//gui.printDebugMessage("Best outcome after initialization: "+globalBestPosition.outcome);
 		for (int i=0; i<numberOfIterations; ++i) {
 			iterationStep();
-			System.out.println("Best outcome after iteration "+(i+1)+": "+globalBestPosition.getOutcome());
+			gui.printDebugMessage("Best outcome after iteration "+(i+1)+": "+globalBestPosition.getOutcome());
 			//gui.appendDebugMessage("Best outcome after iteration "+(i+1)+": "+globalBestPosition.outcome);
 			// 699595 seems to be the best possible outcome (tested with 10000 particles and 10000 iterations)
 			if (drawPlots)

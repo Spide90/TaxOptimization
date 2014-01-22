@@ -5,6 +5,7 @@ import gui.AlgorithmFrame;
 import java.util.List;
 import java.util.Random;
 
+import de.erichseifert.gral.data.DataTable;
 import misc.Decision;
 import misc.Period;
 import misc.TaxFormula;
@@ -20,11 +21,14 @@ public class Hillclimbing extends Search {
 	
 	private double stepSize = 1.005;
 	private int tries = 10;
-
+	private DataTable plotBestOutcomesPerIteration;
+	private int duration;
+	
 	public Hillclimbing(List<Period> periods, double interesstRate) {
 		this.periods = periods;
 		this.interesstRate = interesstRate;
 		frame = new AlgorithmFrame(periods, "Hillclimbing");
+		plotBestOutcomesPerIteration = new DataTable(Integer.class, Integer.class);
 	}
 
 	@Override
@@ -47,18 +51,26 @@ public class Hillclimbing extends Search {
 				optimizeLoss(predeseccor, periods.get(i), successor);
 			}
 		}
+		frame.setTitle("Hillclimbing - fertig");
 	}
 
 	private void optimizeLoss(Period predeseccor, Period current,
 			Period successor) {
 		if (current.getMaximumLossCarryback() == 0) return;
 		Random random = new Random();
+		int bestValue = 0;
+		frame.printDebugMessage("starting los optimization for " + current.getTime());
 		for (int i = 0; i < tries; i++) {
+			duration++;
 			int position = -1 * random.nextInt(-1 * current.getMaximumLossCarryback());
 			Direction direction = random.nextBoolean() ? Direction.UP : Direction.DOWN;
 			current.setLossCarryback(position);
 			TaxFormula.calculatePeriod(predeseccor, current, successor);
-			int bestValue = current.getPeriodMoney();
+			if (current.getPeriodMoney() > bestValue) {
+				bestValue = current.getPeriodMoney();
+				frame.printDebugMessage("new best value: " + bestValue);
+			}
+			plotBestOutcomesPerIteration.add(0, bestValue);
 			boolean finished = false;
 			while (!finished) {
 				if (direction.equals(Direction.UP)) {
@@ -73,7 +85,10 @@ public class Hillclimbing extends Search {
 					finished = true;
 				} else {
 					bestValue = current.getPeriodMoney();
+					frame.printDebugMessage("new best value: " + bestValue);
 				}
+				frame.updatePeriodTable(periods);
+//				frame.updatePlots(plotBestOutcomesPerIteration);
 			}
 		}
 	}
