@@ -5,16 +5,22 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import misc.Decision;
+
 public class InputTableModell extends AbstractTableModel {
 
 	private static final long serialVersionUID = 5580172268854002274L;
 
 	private List<Integer> periods;
 	private List<Integer> incomes;
+	private List<Integer> decisions;
+	private List<Integer> lossCarryback;
 
 	public InputTableModell() {
 		periods = new LinkedList<Integer>();
 		incomes = new LinkedList<Integer>();
+		decisions = new LinkedList<>();
+		lossCarryback = new LinkedList<>();
 	}
 
 	@Override
@@ -42,26 +48,41 @@ public class InputTableModell extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return 2;
+		return 4;
 	}
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (columnIndex == 0) {
-			if (rowIndex == 0) {
+			switch (rowIndex) {
+			case 0:
 				return "Periode";
-			} else {
+			case 1:
 				return "Zahlungsüberschuss";
+			case 2:
+				return "Besteuerung";
+			case 3:
+				return "Rücktrag";
+			default:
+				return "";
 			}
+			
 		} else {
-			if (rowIndex == 0) {
+			switch (rowIndex) {
+			case 0:
 				return periods.get(columnIndex - 1);
-			} else {
+			case 1:
 				return incomes.get(columnIndex - 1);
+			case 2:
+				return decisions.get(columnIndex - 1) == 0 ? Decision.SHARED : Decision.DIVIDED;
+			case 3:
+				return lossCarryback.get(columnIndex - 1);
+			default:
+				return "";
 			}
 		}
 	}
-
+	
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		return (rowIndex > 0) && (columnIndex != 0);
@@ -69,10 +90,22 @@ public class InputTableModell extends AbstractTableModel {
 
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		if (rowIndex == 0) {
+		switch (rowIndex) {
+		case 0:
 			periods.set(columnIndex-1, (int) aValue);
-		} else {
+			break;
+		case 1:
 			incomes.set(columnIndex-1, (int) aValue);
+			break;
+		case 2:
+			if ((int) aValue < 0 || (int) aValue > 1) return;
+			decisions.set(columnIndex-1, (int) aValue);
+			break;
+		case 3:
+			lossCarryback.set(columnIndex-1, -1 * Math.abs((int) aValue));
+			break;
+		default:
+			break;
 		}
 		fireTableStructureChanged();
 	}
@@ -82,11 +115,15 @@ public class InputTableModell extends AbstractTableModel {
 			for (int i = periods.size(); i < periodNumber; i++) {
 				periods.add(i + 1);
 				incomes.add(0);
+				decisions.add(0);
+				lossCarryback.add(0);
 			}
 		} else {
 			for (int i = periods.size(); i > periodNumber; i--) {
 				periods.remove(i - 1);
 				incomes.remove(i - 1);
+				decisions.remove(i - 1);
+				lossCarryback.remove(i - 1);
 			}
 		}
 		fireTableStructureChanged();

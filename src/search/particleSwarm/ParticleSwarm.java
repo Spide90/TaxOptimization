@@ -16,9 +16,9 @@ import de.erichseifert.gral.data.DataTable;
 import de.erichseifert.gral.plots.XYPlot;
 
 public class ParticleSwarm extends Search{
-	static final float weightBestParticlePosition = 0.2f; // phi_p in the wikipedia algorithm
-	static final float weightGlobalBestPosition = 0.4f; // phi_g in the wikipedia algorithm
-	static final float weightCurrentVelocity = 0.8f; // omega in the wikipedia algorithm
+	static final float weightBestParticlePosition = 0.3f; // phi_p in the wikipedia algorithm
+	static final float weightGlobalBestPosition = 0.5f; // phi_g in the wikipedia algorithm
+	static final float weightCurrentVelocity = 0.85f; // omega in the wikipedia algorithm
 	
 	static final Random random = new Random();
 	
