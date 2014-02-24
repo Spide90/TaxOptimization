@@ -238,12 +238,10 @@ public class Period implements Serializable {
 	
 	public void setLossCarryback(int lossCarryback) {
 		this.lossCarryback = lossCarryback > 0 ? -1 * lossCarryback : lossCarryback;;
-		this.lossCarryforward = -1 * (income + interesst - lossCarryback);
 	}
 	
 	public void setLossCarryforward(int lossCarryforward) {
 		this.lossCarryforward = lossCarryforward;
-		notUsedLossCarryforward = maximumLoss - lossCarryback - lossCarryforward;
 	}
 	
 	public void setTaxRefund(int taxRefund) {
@@ -252,6 +250,10 @@ public class Period implements Serializable {
 	
 	public void setTaxRecalculation(int taxRecalculation) {
 		this.taxRecalculation = taxRecalculation;
+	}
+	
+	public void setNotUsedLossCarryforward(int notUsedLossCarryforward) {
+		this.notUsedLossCarryforward = notUsedLossCarryforward;
 	}
 	
 	@Override

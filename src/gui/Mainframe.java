@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -17,7 +18,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.LookAndFeel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -181,7 +186,7 @@ public class Mainframe extends JFrame{
 					search = new Hillclimbing(periods, Double.valueOf(fieldInterestRate.getText()));
 					break;
 				case "Monte Carlo":
-					search = new MonteDaniel(periods, Float.valueOf(fieldInterestRate.getText()), 10000);
+					search = new MonteDaniel(periods, Float.valueOf(fieldInterestRate.getText()), 20000);
 					break;
 				case "Particle Swarm":
 					search = new ParticleSwarm(periods, Float.valueOf(fieldInterestRate.getText()), 100, 100, true);
@@ -220,6 +225,19 @@ public class Mainframe extends JFrame{
 	}
 	
 	public static void main(String[] args) {
+		for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
+			if (laf.getName().equals("Nimbus")) {
+				try {
+					UIManager.setLookAndFeel(laf.getClassName());
+					UIManager.put("Table.alternateRowColor", new 
+                    		Color(195,211,255));
+				} catch (ClassNotFoundException | InstantiationException
+						| IllegalAccessException
+						| UnsupportedLookAndFeelException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		new Mainframe();
 	}
 }
