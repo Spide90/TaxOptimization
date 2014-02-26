@@ -30,7 +30,7 @@ import misc.Decision;
 import misc.Period;
 import search.Search;
 import search.hillclimbing.Hillclimbing;
-import search.monteCarlo.MonteDaniel;
+import search.monteCarlo.MonteCarlo;
 import search.particleSwarm.ParticleSwarm;
 
 public class Mainframe extends JFrame{
@@ -52,7 +52,7 @@ public class Mainframe extends JFrame{
 	public Mainframe() {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setPreferredSize(new Dimension(500, 200));
-		setTitle("Super RÃ¼cktrÃ¤ger");
+		setTitle("Super Rückträger");
 		init();
 		pack();
 		setLocationRelativeTo(null);
@@ -177,7 +177,9 @@ public class Mainframe extends JFrame{
 				periods.add(period);
 				for (int i = 1; i < inputTableModell.getColumnCount(); i++) {
 					Decision decision = (Decision) inputTableModell.getValueAt(2, i);
-					period = new Period(Integer.valueOf(inputTableModell.getValueAt(0, i).toString()), Integer.valueOf(inputTableModell.getValueAt(1, i).toString()), decision, Integer.valueOf(inputTableModell.getValueAt(3, i).toString()));
+					period = new Period(Integer.valueOf(inputTableModell.getValueAt(0, i).toString()),
+							Integer.valueOf(inputTableModell.getValueAt(1, i).toString()), decision,
+							Integer.valueOf(inputTableModell.getValueAt(3, i).toString()));
 					periods.add(period);
 				}
 				Search search = null;
@@ -186,7 +188,7 @@ public class Mainframe extends JFrame{
 					search = new Hillclimbing(periods, Double.valueOf(fieldInterestRate.getText()));
 					break;
 				case "Monte Carlo":
-					search = new MonteDaniel(periods, Float.valueOf(fieldInterestRate.getText()), 20000);
+					search = new MonteCarlo(periods, Float.valueOf(fieldInterestRate.getText()), 20000, true);
 					break;
 				case "Particle Swarm":
 					search = new ParticleSwarm(periods, Float.valueOf(fieldInterestRate.getText()), 100, 100, true);

@@ -1,6 +1,6 @@
 package search.particleSwarm;
 
-import gui.AlgorithmFrame;
+import gui.AlgorithmFrameParticleSwarm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,6 @@ import search.Search;
 import java.util.Random;
 
 import de.erichseifert.gral.data.DataTable;
-import de.erichseifert.gral.plots.XYPlot;
 
 public class ParticleSwarm extends Search{
 	static final float weightBestParticlePosition = 0.3f; // phi_p in the wikipedia algorithm
@@ -26,14 +25,14 @@ public class ParticleSwarm extends Search{
 	private float interesstRate;
 	private int numberOfParticles;
 	private int numberOfIterations;
-	private AlgorithmFrame gui;
+	private AlgorithmFrameParticleSwarm gui;
 	
 	private List<Particle> particles;
 	private ParticlePosition globalBestPosition;
 	
 	// for the plots
 	private boolean drawPlots;
-	DataTable plotBestOutcomesPerIteration;
+	private DataTable plotBestOutcomesPerIteration;
 	
 	public ParticleSwarm(List<Period> periods, float interesstRate, int numberOfParticles, int numberOfIterations, boolean drawPlots) {
 		this.periods =  periods;
@@ -44,7 +43,7 @@ public class ParticleSwarm extends Search{
 		if (drawPlots) {
 			plotBestOutcomesPerIteration = new DataTable(Integer.class, Integer.class);
 		}
-		gui = new AlgorithmFrame(periods, "Particle Swarm");
+		gui = new AlgorithmFrameParticleSwarm(periods);
 	}
 	
 	@Override
@@ -52,13 +51,12 @@ public class ParticleSwarm extends Search{
 		initialization();
 		if (drawPlots)
 			plotBestOutcomesPerIteration.add(0, globalBestPosition.getOutcome());
+		//System.out.println("Best outcome after initialization: "+globalBestPosition.getOutcome());
 		gui.printDebugMessage("Best outcome after initialization: "+globalBestPosition.getOutcome());
-		//gui.printDebugMessage("Best outcome after initialization: "+globalBestPosition.outcome);
 		for (int i=0; i<numberOfIterations; ++i) {
 			iterationStep();
-			gui.printDebugMessage("Best outcome after iteration "+(i+1)+": "+globalBestPosition.getOutcome());
-			//gui.appendDebugMessage("Best outcome after iteration "+(i+1)+": "+globalBestPosition.outcome);
-			// 699595 seems to be the best possible outcome (tested with 10000 particles and 10000 iterations)
+			//System.out.println("Best outcome after iteration "+(i+1)+": "+globalBestPosition.getOutcome());
+			gui.appendDebugMessage("Best outcome after iteration "+(i+1)+": "+globalBestPosition.getOutcome());
 			if (drawPlots)
 				plotBestOutcomesPerIteration.add(i+1, globalBestPosition.getOutcome());
 		}

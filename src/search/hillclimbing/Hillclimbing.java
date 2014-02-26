@@ -22,14 +22,12 @@ public class Hillclimbing extends Search {
 	private List<Period> lossPeriods;
 	private double stepSize = 1.005;
 	//private int tries = 10;
-	private DataTable plotBestOutcomesPerIteration;
 	
 	public Hillclimbing(List<Period> periods, double interesstRate) {
 		this.periods = periods;
 		this.interesstRate = interesstRate;
 		frame = new AlgorithmFrame(periods, "Hillclimbing");
 		lossPeriods = new LinkedList<>();
-		plotBestOutcomesPerIteration = new DataTable(Integer.class, Integer.class);
 	}
 
 	@Override
@@ -42,6 +40,7 @@ public class Hillclimbing extends Search {
 				//optimizeLoss(predeseccor, periods.get(i), successor);
 			}
 		}
+		frame.updatePlots();
 		frame.setTitle("Hillclimbing - fertig");
 	}
 

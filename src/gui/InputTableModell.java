@@ -58,11 +58,11 @@ public class InputTableModell extends AbstractTableModel {
 			case 0:
 				return "Periode";
 			case 1:
-				return "ZahlungsÃ¼berschuss";
+				return "Zahlungsüberschuss";
 			case 2:
 				return "Besteuerung";
 			case 3:
-				return "RÃ¼cktrag";
+				return "Rücktrag";
 			default:
 				return "";
 			}
