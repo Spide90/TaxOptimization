@@ -41,6 +41,7 @@ public class MonteCarlo extends Search {
 	
 	@Override
 	public void run() {
+		gui.setTitle("Monte Carlo - calculating...");
 		bestResult = new ParticlePosition(periods, interesstRate);
 		if (drawPlots)
 			outcomes.add(bestResult.getOutcome());

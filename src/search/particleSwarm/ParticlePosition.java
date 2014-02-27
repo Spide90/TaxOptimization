@@ -30,9 +30,11 @@ public class ParticlePosition {
 		}
 		// set the carrybacks
 		for (int i=1; i<periods.size(); ++i) {
+			// TODO vor berechnung des max loss carrybacks income setzen
 			int maxLossCarryback = TaxFormula.calculateMaximumLosscarryback(periods.get(i-1), periods.get(i));
 			carrybacks[i] = ParticleSwarm.random.nextFloat() * maxLossCarryback; // between 0 and max loss carryback
 			periods.get(i).setLossCarryback(Math.round(carrybacks[i]));
+			// nach setzen des loss carrybacks periode berechnen
 		}
 		// compute the outcome with those setting
 		TaxFormula.updatePeriods(periods, interestRate);

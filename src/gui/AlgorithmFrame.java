@@ -123,7 +123,7 @@ public class AlgorithmFrame extends JFrame {
 
 		pack();
 		setVisible(true);
-		setTitle(algorithmName + " - calculating...");
+		setTitle(algorithmName);
 	}
 
 	private ActionListener actionShowConsole() {

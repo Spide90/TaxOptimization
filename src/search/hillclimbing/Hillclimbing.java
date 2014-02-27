@@ -22,15 +22,19 @@ public class Hillclimbing extends Search {
 	private double stepSize = 1.005;
 	//private int tries = 10;
 	
-	public Hillclimbing(List<Period> periods, double interesstRate) {
+	private boolean drawPlots;
+	
+	public Hillclimbing(List<Period> periods, double interesstRate, boolean drawPlots) {
 		this.periods = periods;
 		this.interesstRate = interesstRate;
+		this.drawPlots = drawPlots;
 		frame = new AlgorithmFrame(periods, "Hillclimbing");
 		lossPeriods = new LinkedList<>();
 	}
 
 	@Override
 	public void run() {
+		frame.setTitle("Hillclimbing - calculating...");
 		setDecisions();
 		for (int i = 0; i < periods.size(); i++) {
 			if (periods.get(i).getIncome() < 0) {
@@ -39,7 +43,9 @@ public class Hillclimbing extends Search {
 				//optimizeLoss(predeseccor, periods.get(i), successor);
 			}
 		}
-		frame.updatePlots(null, null, null, null, null);
+		if (drawPlots) {
+			frame.updatePlots(null, null, null, null, null);
+		}
 		frame.setTitle("Hillclimbing - done.");
 	}
 

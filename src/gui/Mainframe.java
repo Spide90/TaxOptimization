@@ -31,6 +31,7 @@ import search.Search;
 import search.hillclimbing.Hillclimbing;
 import search.monteCarlo.MonteCarlo;
 import search.particleSwarm.ParticleSwarm;
+import search.simpleTableComputation.SimpleTableComputation;
 
 public class Mainframe extends JFrame{
 
@@ -119,6 +120,7 @@ public class Mainframe extends JFrame{
 		comboBoxAlgorithm.addItem("Hillclimbing");
 		comboBoxAlgorithm.addItem("Monte Carlo");
 		comboBoxAlgorithm.addItem("Particle Swarm");
+		comboBoxAlgorithm.addItem("Compute Table");
 		layout.setConstraints(comboBoxAlgorithm, gbc);
 		add(comboBoxAlgorithm);
 		
@@ -171,7 +173,7 @@ public class Mainframe extends JFrame{
 					return;
 				}
 				List<Period> periods = new ArrayList<>();
-				Period period = new Period(0, 0, 0, Decision.SHARED, 0);
+				Period period = new Period(0, 0, 0, Decision.SHARED, 0); // fake period containing the start money
 				period.setPeriodMoney(Integer.valueOf(fieldStartMoney.getText()));
 				periods.add(period);
 				for (int i = 1; i < inputTableModell.getColumnCount(); i++) {
@@ -184,13 +186,16 @@ public class Mainframe extends JFrame{
 				Search search = null;
 				switch (comboBoxAlgorithm.getSelectedItem().toString()) {
 				case "Hillclimbing":
-					search = new Hillclimbing(periods, Double.valueOf(fieldInterestRate.getText()));
+					search = new Hillclimbing(periods, Double.valueOf(fieldInterestRate.getText()), true);
 					break;
 				case "Monte Carlo":
 					search = new MonteCarlo(periods, Float.valueOf(fieldInterestRate.getText()), 20000, true);
 					break;
 				case "Particle Swarm":
 					search = new ParticleSwarm(periods, Float.valueOf(fieldInterestRate.getText()), 100, 100, true);
+					break;
+				case "Compute Table":
+					search = new SimpleTableComputation(periods, Float.valueOf(fieldInterestRate.getText()), true);
 					break;
 				default:
 					break;

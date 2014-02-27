@@ -31,7 +31,7 @@ public class TaxFormula {
 				* current.getIncomeAndInteresst()
 				+ current.getDecision().getValue() * current.getIncome());
 		int premax = Math.max(0, predesseccor.getTaxableProfit());
-		int lossLimit = Math.max(-511500, Math.max(currentmin, -premax));
+		int lossLimit = Math.max(-1000000, Math.max(currentmin, -premax));
 		return lossLimit;
 	}
 
@@ -43,22 +43,14 @@ public class TaxFormula {
 	 *            neutral period will be created
 	 * @param current
 	 *            the current period
-	 * @param successor
-	 *            the next period, if there is no next period (null) a neutral
-	 *            period will be created. From the successor only the loss
-	 *            carryback is used.
 	 * @return the taxable profit
 	 */
 	public static int calculateTaxableProfit(Period predesseccor,
-			Period current, Period successor) {
+			Period current) {
 		if (predesseccor == null) {
 			predesseccor = new Period(current.getTime() - 1, 0, 0,
 					Decision.SHARED, 0);
 			predesseccor.setPeriodMoney(current.getPeriodMoney());
-		}
-		if (successor == null) {
-			successor = new Period(current.getTime() + 1, 0, 0,
-					Decision.SHARED, 0);
 		}
 		int taxableProfit = 0;
 		if (current.getDecision().equals(Decision.SHARED)) {
@@ -84,6 +76,11 @@ public class TaxFormula {
 		return taxableProfit;
 	}
 
+	/**
+	 * 	 @param successor
+	 *       From the successor only the loss
+	 *       carryback is used.
+	 */
 	public static int calculateTaxesAfterLossCarryback(Period current,
 			Period successor) {
 		if (successor == null) {
@@ -228,8 +225,7 @@ public class TaxFormula {
 			Period successor) {
 		current.setMaximumLoss(calculateMaximumLosscarryback(predesseccor,
 				current));
-		current.setTaxableProfit(calculateTaxableProfit(predesseccor, current,
-				successor));
+		current.setTaxableProfit(calculateTaxableProfit(predesseccor, current));
 		current.setTaxA(calculateTaxA(current));
 		current.setTaxB(calculateTaxB(current));
 		current.setTaxes(calculateTaxes(current));
