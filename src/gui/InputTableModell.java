@@ -56,13 +56,13 @@ public class InputTableModell extends AbstractTableModel {
 		if (columnIndex == 0) {
 			switch (rowIndex) {
 			case 0:
-				return "Periode";
+				return "Period";
 			case 1:
-				return "Zahlungsüberschuss";
+				return "Income";
 			case 2:
-				return "Besteuerung";
+				return "Decision";
 			case 3:
-				return "Rücktrag";
+				return "Carry Back";
 			default:
 				return "";
 			}

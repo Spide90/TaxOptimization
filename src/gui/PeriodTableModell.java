@@ -31,39 +31,39 @@ public class PeriodTableModell extends AbstractTableModel {
 		if (arg1 == 0) {
 			switch (arg0) {
 			case 0:
-				return "Zeit";
+				return "Time"; // Zeit
 			case 1:
-				return "Zahlungsüberschuss";
+				return "Income"; // Zahlungsueberschuss
 			case 2:
-				return "Zinseinnahmen";
+				return "Interest"; // Zinseinnahmen
 			case 3:
-				return "Zahlungsüberschuss und Zinseinnahmen";
+				return "Income+Interest"; // Zahlungsueberschuss und Zinseinnahmen
 			case 4:
-				return "Besteuerung";
+				return "Decision"; // Besteuerung
 			case 5:
-				return "Maximaler Verlustrücktrag";
+				return "Max Loss Carryback"; // Maximaler Verlustruecktrag
 			case 6:
-				return "Zu versteuerndes Einkommen";
+				return "Taxable Profit"; // Zu versteuerndes Einkommen
 			case 7:
 				return "";
 			case 8:
 				return "";
 			case 9:
-				return "Steuerzahlungen";
+				return "Taxes"; // Steuerzahlungen
 			case 10:
-				return "Steuern nach Verlustrücktrag";
+				return "Taxable profit after loss carryback"; // Steuern nach Verlustrücktrag
 			case 11:
-				return "Steuer Neuberechnung";
+				return "Tax Recalulation"; // Steuer Neuberechnung
 			case 12:
-				return "Steuererstattung";
+				return "Tax Refund"; // Steuererstattung
 			case 13:
-				return "Vermögen";
+				return "Wealth"; // Vermoegen
 			case 14:
-				return "Verlustrücktrag";
+				return "Loss Carryback"; // Verlustrücktrag
 			case 15:
-				return "Verlustvortag";
+				return "Loss Carryforward"; // Verlustvortag
 			case 16:
-				return "Verlustvortrag übrig";
+				return "Remaining Loss Carryforward"; // Verlustvortrag übrig
 			default:
 				throw new IndexOutOfBoundsException();
 			}

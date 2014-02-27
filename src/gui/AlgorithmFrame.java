@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -124,7 +123,7 @@ public class AlgorithmFrame extends JFrame {
 
 		pack();
 		setVisible(true);
-		setTitle(algorithmName + " - rechnet...");
+		setTitle(algorithmName + " - calculating...");
 	}
 
 	private ActionListener actionShowConsole() {
@@ -167,15 +166,39 @@ public class AlgorithmFrame extends JFrame {
 	public void appendDebugMessage(String message) {
 		console.setText(console.getText() + "\n\n" + message);
 	}
+	
+	
+	public enum PlotType {
+		LinePlot, BarPlot
+	}
 
-	public void updatePlots() {
+	/**
+	 * Render the default plot "outcome per period" and a algorithm specific plot if desired
+	 * @param algorithmSpecificPlotData the data for the algorithm specific plot or null
+	 */
+	@SuppressWarnings("unchecked")
+	public void updatePlots(DataSource algorithmSpecificPlotData, PlotType plotType, String plotTitle,
+			String xAxisLabel, String yAxisLabel) {
 		plotsPanel.removeAll();
+		int plotCount= algorithmSpecificPlotData!=null? 2 : 1;
+		plotsPanel.setLayout(new GridLayout(plotCount,1));
+		plotsPanel.setPreferredSize(new Dimension(preferredPlotSize.width, preferredPlotSize.height*plotCount));
+		plotsPanel.setMinimumSize(new Dimension(preferredPlotSize.width, preferredPlotSize.height*plotCount));
+		
 		// generate a plot for the outcome per period
 		DataTable periodsData = new DataTable(Integer.class, Integer.class);
 		for (int i=1; i<periods.size(); ++i)
 			periodsData.add(i,periods.get(i).getPeriodMoney());
 		plotsPanel.add(createLinePlot(periodsData, "Outcome per period", "Period", "Outcome", Color.blue));
 		pack();
+		
+		if (algorithmSpecificPlotData!=null) {
+			if (plotType==PlotType.LinePlot)
+				plotsPanel.add(createLinePlot(algorithmSpecificPlotData, plotTitle, xAxisLabel, yAxisLabel, Color.green));
+			else
+				plotsPanel.add(createBarPlot(algorithmSpecificPlotData, plotTitle, xAxisLabel, yAxisLabel, Color.green));
+			pack();
+		}
 	}
 
 	protected JPanel createLinePlot(DataSource data, String title,

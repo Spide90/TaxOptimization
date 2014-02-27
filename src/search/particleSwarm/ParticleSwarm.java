@@ -1,11 +1,11 @@
 package search.particleSwarm;
 
-import gui.AlgorithmFrameParticleSwarm;
+import gui.AlgorithmFrame;
+import gui.AlgorithmFrame.PlotType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import misc.Decision;
 import misc.Period;
 import misc.TaxFormula;
 import search.Search;
@@ -25,7 +25,7 @@ public class ParticleSwarm extends Search{
 	private float interesstRate;
 	private int numberOfParticles;
 	private int numberOfIterations;
-	private AlgorithmFrameParticleSwarm gui;
+	private AlgorithmFrame gui;
 	
 	private List<Particle> particles;
 	private ParticlePosition globalBestPosition;
@@ -34,6 +34,7 @@ public class ParticleSwarm extends Search{
 	private boolean drawPlots;
 	private DataTable plotBestOutcomesPerIteration;
 	
+	@SuppressWarnings("unchecked")
 	public ParticleSwarm(List<Period> periods, float interesstRate, int numberOfParticles, int numberOfIterations, boolean drawPlots) {
 		this.periods =  periods;
 		this.interesstRate = interesstRate;
@@ -43,7 +44,7 @@ public class ParticleSwarm extends Search{
 		if (drawPlots) {
 			plotBestOutcomesPerIteration = new DataTable(Integer.class, Integer.class);
 		}
-		gui = new AlgorithmFrameParticleSwarm(periods);
+		gui = new AlgorithmFrame(periods, "Particle Swarm");
 	}
 	
 	@Override
@@ -61,9 +62,11 @@ public class ParticleSwarm extends Search{
 				plotBestOutcomesPerIteration.add(i+1, globalBestPosition.getOutcome());
 		}
 		updateGui();
-		if (drawPlots)
-			gui.updatePlots(plotBestOutcomesPerIteration);
-		gui.setTitle("Particle Swarm - fertig");
+		if (drawPlots) {
+			gui.setTitle("Particle Swarm - drawing plots...");
+			gui.updatePlots(plotBestOutcomesPerIteration, PlotType.LinePlot,  "Best outcome per iteration", "Iteration", "Best outcome");
+		}
+		gui.setTitle("Particle Swarm - done.");
 	}
 	
 	
@@ -105,29 +108,5 @@ public class ParticleSwarm extends Search{
 		}
 		TaxFormula.updatePeriods(periods, interesstRate);
 		gui.updatePeriodTable(periods);
-	}
-	
-	
-	// just for testing of the table. Apply this to 6 periods as defined in TaxFormula.main(). So insert following values into the GUI:
-	// Start money: 600000
-	// Interest rate: 0.08
-	// Periode                  1       2       3       4       5       6
-	// Zahlungsueberschuesse    0 -150000   50000       0 -150000   50000
-	// The correct result for PeriodMoney of period 6 should be 656114 (+/-1).
-	private void formulaTest() {
-		// set the variables (those are not computed in the excel sheet but set by the user)
-		periods.get(1).setDecision(Decision.SHARED);
-		periods.get(2).setDecision(Decision.DIVIDED);
-		periods.get(3).setDecision(Decision.SHARED);
-		periods.get(4).setDecision(Decision.SHARED);
-		periods.get(5).setDecision(Decision.SHARED);
-		periods.get(6).setDecision(Decision.DIVIDED);
-		periods.get(1).setLossCarryback(0);
-		periods.get(2).setLossCarryback(-18550);
-		periods.get(3).setLossCarryback(0);
-		periods.get(4).setLossCarryback(0);
-		periods.get(5).setLossCarryback(-21456);
-		periods.get(6).setLossCarryback(0);
-		TaxFormula.updatePeriods(periods, interesstRate);
 	}
 }

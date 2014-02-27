@@ -9,7 +9,6 @@ import misc.Decision;
 import misc.Period;
 import misc.TaxFormula;
 import search.Search;
-import de.erichseifert.gral.data.DataTable;
 
 public class Hillclimbing extends Search {
 	
@@ -40,8 +39,8 @@ public class Hillclimbing extends Search {
 				//optimizeLoss(predeseccor, periods.get(i), successor);
 			}
 		}
-		frame.updatePlots();
-		frame.setTitle("Hillclimbing - fertig");
+		frame.updatePlots(null, null, null, null, null);
+		frame.setTitle("Hillclimbing - done.");
 	}
 
 	private void optimizeLoss() {

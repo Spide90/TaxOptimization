@@ -1,6 +1,7 @@
 package search.monteCarlo;
 
-import gui.AlgorithmFrameMonteCarlo;
+import gui.AlgorithmFrame;
+import gui.AlgorithmFrame.PlotType;
 
 import java.util.List;
 
@@ -19,13 +20,14 @@ public class MonteCarlo extends Search {
 	private List<Period> periods;
 	private float interesstRate;
 	private ParticlePosition bestResult;
-	private AlgorithmFrameMonteCarlo gui;
+	private AlgorithmFrame gui;
 	private int numberOfIterations;
 	
 	// for the plots
 	private boolean drawPlots;
 	private DataTable outcomes;
 	
+	@SuppressWarnings("unchecked")
 	public MonteCarlo(List<Period> periods, float interesstRate, int numberOfIterations, boolean drawPlots) {
 		this.periods =  periods;
 		this.interesstRate = interesstRate;
@@ -34,7 +36,7 @@ public class MonteCarlo extends Search {
 		if (drawPlots) {
 			outcomes = new DataTable(Integer.class);
 		}
-		gui = new AlgorithmFrameMonteCarlo(periods);
+		gui = new AlgorithmFrame(periods, "Monte Carlo");
 	}
 	
 	@Override
@@ -50,9 +52,11 @@ public class MonteCarlo extends Search {
 				outcomes.add(newTry.getOutcome());
 		}
 		updateGui();
-		if (drawPlots)
-			gui.updatePlots(outcomes);
-		gui.setTitle("Monte Carlo - fertig");
+		if (drawPlots) {
+			gui.setTitle("Monte Carlo - drawing plots...");
+			gui.updatePlots(outcomes, PlotType.BarPlot,  "Outcome distribution", "Outcome", "Occurence");
+		}
+		gui.setTitle("Monte Carlo - done.");
 	}
 	
 	
