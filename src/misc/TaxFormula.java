@@ -70,15 +70,15 @@ public class TaxFormula {
 			int currentMax = Math.max(
 					predesseccor.getNotUsedLossCarryforward(), preMin);
 
-			taxableProfit = Math.max(0, current.getIncomeAndInteresst()
-					+ currentMax);
+			taxableProfit = (int) Math.ceil(Math.max(0, current.getIncomeAndInteresst()
+					+ currentMax));
 		} else {
 			int currentMin = (int) Math.round(Math.min(
 					-1000000 - (0.6 * (current.getIncome() - 1000000)), 0));
 			int currentMax = Math.max(
 					predesseccor.getNotUsedLossCarryforward(), currentMin);
 
-			taxableProfit = Math.max(0, current.getIncome() + currentMax);
+			taxableProfit = (int) Math.ceil(Math.max(0, current.getIncome() + currentMax));
 		}
 
 		return taxableProfit;
@@ -172,7 +172,7 @@ public class TaxFormula {
 			Period current) {
 		int taxes = 0;
 		if (current.getDecision().equals(Decision.DIVIDED)) {
-			taxes = (int) Math.round(0.25 * current.getInteresst());
+			taxes = (int) Math.ceil(0.25 * current.getInteresst());
 		}
 
 		if (current.getTaxableProfitAfterLossCarryback() >= 0
@@ -181,20 +181,20 @@ public class TaxFormula {
 		}
 		if (current.getTaxableProfitAfterLossCarryback() >= 8355
 				&& current.getTaxableProfitAfterLossCarryback() <= 13469) {
-			taxes += (int) Math.round((974.58 * current.getTaxA() + 1.400) * current
+			taxes += (int) Math.ceil((974.58 * current.getTaxA() + 1.400) * current
 					.getTaxA());
 		}
 		if (current.getTaxableProfitAfterLossCarryback() >= 13470
 				&& current.getTaxableProfitAfterLossCarryback() <= 52881) {
-			taxes += (int) Math.round((228.74 * current.getTaxB() + 2397)
+			taxes += (int) Math.ceil((228.74 * current.getTaxB() + 2397)
 					* current.getTaxB() + 971);
 		}
 		if (current.getTaxableProfitAfterLossCarryback() >= 52882
 				&& current.getTaxableProfitAfterLossCarryback() <= 250730) {
-			taxes += (int) Math.round(0.42 * current.getTaxableProfitAfterLossCarryback() - 8239);
+			taxes += (int) Math.ceil(0.42 * current.getTaxableProfitAfterLossCarryback() - 8239);
 		}
 		if (current.getTaxableProfitAfterLossCarryback() >= 250731) {
-			taxes += (int) Math.round(0.45 * current.getTaxableProfitAfterLossCarryback() - 15761);
+			taxes += (int) Math.ceil(0.45 * current.getTaxableProfitAfterLossCarryback() - 15761);
 		}
 		return taxes;
 	}
