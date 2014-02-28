@@ -19,15 +19,16 @@ public class Hillclimbing extends Search {
 	private double interesstRate;
 	
 	private List<Period> lossPeriods;
-	private double stepSize = 1.005;
+	private double stepSize;
 	//private int tries = 10;
 	
 	private boolean drawPlots;
 	
-	public Hillclimbing(List<Period> periods, double interesstRate, boolean drawPlots) {
+	public Hillclimbing(List<Period> periods, double interesstRate, boolean drawPlots, double stepSize) {
 		this.periods = periods;
 		this.interesstRate = interesstRate;
 		this.drawPlots = drawPlots;
+		this.stepSize = stepSize;
 		frame = new AlgorithmFrame(periods, "Hillclimbing");
 		lossPeriods = new LinkedList<>();
 	}

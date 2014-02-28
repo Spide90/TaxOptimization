@@ -7,8 +7,11 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -52,7 +55,7 @@ public class Mainframe extends JFrame{
 	public Mainframe() {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setPreferredSize(new Dimension(500, 200));
-		setTitle("Super Rückträger");
+		setTitle("Super Rï¿½cktrï¿½ger");
 		init();
 		pack();
 		setLocationRelativeTo(null);
@@ -184,15 +187,25 @@ public class Mainframe extends JFrame{
 					periods.add(period);
 				}
 				Search search = null;
+				Properties properties = new Properties();
+				try {
+					properties.load(new FileInputStream("etc/TaxOptimization.properties"));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 				switch (comboBoxAlgorithm.getSelectedItem().toString()) {
 				case "Hillclimbing":
-					search = new Hillclimbing(periods, Double.valueOf(fieldInterestRate.getText()), true);
+					double stepSize = Double.valueOf(properties.get("hillclimb_stepsize").toString());
+					search = new Hillclimbing(periods, Double.valueOf(fieldInterestRate.getText()), true, stepSize);
 					break;
 				case "Monte Carlo":
-					search = new MonteCarlo(periods, Float.valueOf(fieldInterestRate.getText()), 20000, true);
+					int iterations = Integer.valueOf(properties.get("montecarlo_iterations").toString());
+					search = new MonteCarlo(periods, Float.valueOf(fieldInterestRate.getText()), iterations, true);
 					break;
 				case "Particle Swarm":
-					search = new ParticleSwarm(periods, Float.valueOf(fieldInterestRate.getText()), 100, 100, true);
+					iterations = Integer.valueOf(properties.get("particleswarm_iterations").toString());
+					int particles = Integer.valueOf(properties.getProperty("particleswarm_particles"));
+					search = new ParticleSwarm(periods, Float.valueOf(fieldInterestRate.getText()), particles, iterations, true);
 					break;
 				case "Compute Table":
 					search = new SimpleTableComputation(periods, Float.valueOf(fieldInterestRate.getText()), true);
@@ -223,8 +236,7 @@ public class Mainframe extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
+				new SettingsFrame();
 			}
 		};
 		return settingsActionListener;
