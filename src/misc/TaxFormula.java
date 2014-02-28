@@ -63,18 +63,18 @@ public class TaxFormula {
 		int taxableProfit = 0;
 		if (current.getDecision().equals(Decision.SHARED)) {
 
-			int preMin = (int) Math.min(
+			int preMin = (int) Math.round(Math.min(
 					-1000000 - 0.6
 							* (predesseccor.getIncomeAndInteresst() - 1000000),
-					0);
+					0));
 			int currentMax = Math.max(
 					predesseccor.getNotUsedLossCarryforward(), preMin);
 
 			taxableProfit = Math.max(0, current.getIncomeAndInteresst()
 					+ currentMax);
 		} else {
-			int currentMin = (int) Math.min(
-					-1000000 - (0.6 * (current.getIncome() - 1000000)), 0);
+			int currentMin = (int) Math.round(Math.min(
+					-1000000 - (0.6 * (current.getIncome() - 1000000)), 0));
 			int currentMax = Math.max(
 					predesseccor.getNotUsedLossCarryforward(), currentMin);
 
@@ -141,7 +141,7 @@ public class TaxFormula {
 	public static int calculateTaxes(Period current) {
 		int taxes = 0;
 		if (current.getDecision().equals(Decision.DIVIDED)) {
-			taxes = (int) (0.25 * current.getInteresst());
+			taxes = (int) Math.round(0.25 * current.getInteresst());
 		}
 
 		if (current.getTaxableProfit() >= 0
@@ -150,20 +150,20 @@ public class TaxFormula {
 		}
 		if (current.getTaxableProfit() >= 8355
 				&& current.getTaxableProfit() <= 13469) {
-			taxes += (int) ((974.58 * current.getTaxA() + 1.400) * current
+			taxes += (int) Math.round((974.58 * current.getTaxA() + 1.400) * current
 					.getTaxA());
 		}
 		if (current.getTaxableProfit() >= 13470
 				&& current.getTaxableProfit() <= 52881) {
-			taxes += (int) ((228.74 * current.getTaxB() + 2397)
+			taxes += (int) Math.round((228.74 * current.getTaxB() + 2397)
 					* current.getTaxB() + 971);
 		}
 		if (current.getTaxableProfit() >= 52882
 				&& current.getTaxableProfit() <= 250730) {
-			taxes += (int) (0.42 * current.getTaxableProfit() - 8239);
+			taxes += (int) Math.round(0.42 * current.getTaxableProfit() - 8239);
 		}
 		if (current.getTaxableProfit() >= 250731) {
-			taxes += (int) (0.45 * current.getTaxableProfit() - 15761);
+			taxes += (int) Math.round(0.45 * current.getTaxableProfit() - 15761);
 		}
 		return taxes;
 	}
@@ -172,7 +172,7 @@ public class TaxFormula {
 			Period current) {
 		int taxes = 0;
 		if (current.getDecision().equals(Decision.DIVIDED)) {
-			taxes = (int) (0.25 * current.getInteresst());
+			taxes = (int) Math.round(0.25 * current.getInteresst());
 		}
 
 		if (current.getTaxableProfitAfterLossCarryback() >= 0
@@ -181,20 +181,20 @@ public class TaxFormula {
 		}
 		if (current.getTaxableProfitAfterLossCarryback() >= 8355
 				&& current.getTaxableProfitAfterLossCarryback() <= 13469) {
-			taxes += (int) ((974.58 * current.getTaxA() + 1.400) * current
+			taxes += (int) Math.round((974.58 * current.getTaxA() + 1.400) * current
 					.getTaxA());
 		}
 		if (current.getTaxableProfitAfterLossCarryback() >= 13470
 				&& current.getTaxableProfitAfterLossCarryback() <= 52881) {
-			taxes += (int) ((228.74 * current.getTaxB() + 2397)
+			taxes += (int) Math.round((228.74 * current.getTaxB() + 2397)
 					* current.getTaxB() + 971);
 		}
 		if (current.getTaxableProfitAfterLossCarryback() >= 52882
 				&& current.getTaxableProfitAfterLossCarryback() <= 250730) {
-			taxes += (int) (0.42 * current.getTaxableProfitAfterLossCarryback() - 8239);
+			taxes += (int) Math.round(0.42 * current.getTaxableProfitAfterLossCarryback() - 8239);
 		}
 		if (current.getTaxableProfitAfterLossCarryback() >= 250731) {
-			taxes += (int) (0.45 * current.getTaxableProfitAfterLossCarryback() - 15761);
+			taxes += (int) Math.round(0.45 * current.getTaxableProfitAfterLossCarryback() - 15761);
 		}
 		return taxes;
 	}
@@ -275,7 +275,7 @@ public class TaxFormula {
 	 * 			The interest rate (Zinssatz)
 	 */
 	public static void updateInterest(Period current, Period predecessor, float interestRate) {
-		current.setInteresst((int) (interestRate * predecessor.getPeriodMoney()));
+		current.setInteresst((int) Math.round(interestRate * predecessor.getPeriodMoney()));
 	}
 	
 	/**

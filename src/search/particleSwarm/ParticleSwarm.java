@@ -3,21 +3,22 @@ package search.particleSwarm;
 import gui.AlgorithmFrame;
 import gui.AlgorithmFrame.PlotType;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.util.Random;
 
 import misc.Period;
 import misc.TaxFormula;
 import search.Search;
-
-import java.util.Random;
-
 import de.erichseifert.gral.data.DataTable;
 
 public class ParticleSwarm extends Search{
-	static final float weightBestParticlePosition = 0.3f; // phi_p in the wikipedia algorithm
-	static final float weightGlobalBestPosition = 0.5f; // phi_g in the wikipedia algorithm
-	static final float weightCurrentVelocity = 0.85f; // omega in the wikipedia algorithm
+	static float weightBestParticlePosition = 0.3f; // phi_p in the wikipedia algorithm
+	static float weightGlobalBestPosition = 0.5f; // phi_g in the wikipedia algorithm
+	static float weightCurrentVelocity = 0.85f; // omega in the wikipedia algorithm
 	
 	static final Random random = new Random();
 	
@@ -45,6 +46,15 @@ public class ParticleSwarm extends Search{
 			plotBestOutcomesPerIteration = new DataTable(Integer.class, Integer.class);
 		}
 		gui = new AlgorithmFrame(periods, "Particle Swarm");
+		Properties properties = new Properties();
+		try {
+			properties.load(new FileInputStream("etc/TaxOptimization.properties"));
+			weightBestParticlePosition = Float.valueOf(properties.getProperty("particleswarm_phi_p"));
+			weightGlobalBestPosition = Float.valueOf(properties.getProperty("particleswarm_phi_g"));
+			weightCurrentVelocity = Float.valueOf(properties.getProperty("particleswarm_omega"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
