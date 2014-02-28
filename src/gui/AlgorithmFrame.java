@@ -227,6 +227,12 @@ public class AlgorithmFrame extends JFrame {
 				plot.getAxis(XYPlot.AXIS_Y).setRange(0, 2.1 * (value + 1));
 			else
 				plot.getAxis(XYPlot.AXIS_Y).setRange(2.1 * (value + 1), 0);
+		} else { // otherwise we have a range
+			// we want to enlarge the range a litle bit
+			float min = plot.getAxis(XYPlot.AXIS_Y).getMin().floatValue();
+			float max = plot.getAxis(XYPlot.AXIS_Y).getMax().floatValue();
+			float offset = (max-min)*0.2f;
+			plot.getAxis(XYPlot.AXIS_Y).setRange(min-offset, max+offset);
 		}
 		// draw an area between the graph and the x axis
 		AreaRenderer area = new DefaultAreaRenderer2D();

@@ -11,7 +11,15 @@ import java.util.List;
 public class TaxFormula {
 
 	/**
-	 * calculate the maximum loss carryback according to excel template
+	 * calculate the maximum loss carryback according to excel template.
+	 * The maximum loss carryback is dependent of:
+	 * - from the current period: decision, income and interest. Thus, the decision
+	 * 		and must be set and the interest computed before calling this method.
+	 * 		Especially the maximum loss does not depent on the outcome of the
+	 * 		current period
+	 * - from the predecessor period: The predecessor period should be updated
+	 * 		completely before calling this method, as the interest of the current
+	 * 		period depends on the outcome of the predecessor.
 	 * 
 	 * @param predesseccor
 	 *            the previous period, if there is no previous period (null) a
@@ -77,9 +85,16 @@ public class TaxFormula {
 	}
 
 	/**
+	 * From the successor only the loss carryback is used.
+	 * 
+	 * This result is not used for the outcome of the current period i, but only
+	 * in the successor period i+1. As the loss carryback and max loss carryback  of i+1
+	 * do not depend on any other attributes of period i+1 despite income, interest and decision,
+	 * there is no circular dependancy between the loss carryback and max loss carryback of i+1
+	 * with the outcome or any other field of period i.
+	 * 
 	 * 	 @param successor
-	 *       From the successor only the loss
-	 *       carryback is used.
+	 *       From the successor only the loss carryback is used.
 	 */
 	public static int calculateTaxesAfterLossCarryback(Period current,
 			Period successor) {
@@ -212,14 +227,18 @@ public class TaxFormula {
 	}
 
 	/**
-	 * combined method to calculate (and update) a whole period
+	 * combined method to calculate (and update) a whole period.
+	 * 
+	 * To understand the effect of the succesor also read the comments of calculateMaximumLosscarryback
+	 * and calculateTaxesAfterLossCarryback. The facit is: although it might look so, there is no circular
+	 * dependency between the periods.
 	 * 
 	 * @param predesseccor
 	 *            the previous period
 	 * @param current
 	 *            the current period
 	 * @param successor
-	 *            the next period
+	 *            the next period. From the successor only the loss carryback is used
 	 */
 	public static void calculatePeriod(Period predesseccor, Period current,
 			Period successor) {
@@ -244,19 +263,45 @@ public class TaxFormula {
 	}
 
 	/**
+	 * Set the interest (Zinsen) of the current period. It depends on the outcome
+	 * of the previous period, thus the previous period should be completely
+	 * computed before calling this method.
+	 * 
+	 * @param current
+	 * 			The period to change
+	 * @param predecessor
+	 * 			the predecessor period. Must be completely calculated.
+	 * @param interestRate
+	 * 			The interest rate (Zinssatz)
+	 */
+	public static void updateInterest(Period current, Period predecessor, float interestRate) {
+		current.setInteresst((int) (interestRate * predecessor.getPeriodMoney()));
+	}
+	
+	/**
 	 * updates all values of the periods, that are dynamically computed.
 	 */
 	public static void updatePeriods(List<Period> periods, float interesstRate) {
-		// period 0 only contains the start money in periodMoney
-		for (int i = 1; i < periods.size(); ++i) {
-			periods.get(i)
-					.setInteresst(
-							(int) (interesstRate * periods.get(i - 1)
-									.getPeriodMoney()));
-			TaxFormula.calculatePeriod(periods.get(i - 1), periods.get(i),
-					i + 1 >= periods.size() ? null : periods.get(i + 1));
+		// period 0 is a dummy period and only contains the start money in periodMoney
+		updatePeriodsStartingAt(periods, interesstRate, 1);
+	}
+	
+	/**
+	 * updates all values of the periods with index higher than startIndex.
+	 */
+	public static void updatePeriodsStartingAt(List<Period> periods, float interesstRate, int startIndex) {
+		// period 0 is a dummy period and only contains the start money in periodMoney
+		if (startIndex <= 0)
+			startIndex = 1;
+		for (int i = startIndex; i < periods.size(); ++i) {
+			Period current = periods.get(i);
+			Period predecessor = periods.get(i-1);
+			Period successor = i + 1 >= periods.size() ? null : periods.get(i + 1);
+			updateInterest(current, predecessor, interesstRate);
+			TaxFormula.calculatePeriod(predecessor, current, successor);
 		}
 	}
+	
 
 	// formula tests
 	//
