@@ -176,7 +176,7 @@ public class Mainframe extends JFrame{
 					return;
 				}
 				List<Period> periods = new ArrayList<>();
-				Period period = new Period(0, 0, 0, Decision.SHARED, 0); // fake period containing the start money
+				Period period = new Period(0, 0, 0, Decision.SHARED, 0); // dummy period containing the start money
 				period.setPeriodMoney(Integer.valueOf(fieldStartMoney.getText()));
 				periods.add(period);
 				for (int i = 1; i < inputTableModell.getColumnCount(); i++) {
