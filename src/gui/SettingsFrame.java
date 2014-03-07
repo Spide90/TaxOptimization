@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -171,6 +172,8 @@ public class SettingsFrame extends JFrame {
 		properties.put("particleswarm_omega", String.valueOf(psOmega.getValue()));
 		try {
 			properties.store(new FileOutputStream("etc/TaxOptimization.properties"), null);
+			// close the frame
+			this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
