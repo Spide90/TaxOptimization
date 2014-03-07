@@ -24,7 +24,7 @@ public class Particle {
 		this.interestRate =  interestRate;
 		currentPosition = new ParticlePosition(periods, interestRate);
 		bestPosition = new ParticlePosition(currentPosition);
-		particleVelocity = new ParticleVelocity(periods, interestRate);
+		particleVelocity = new ParticleVelocity(periods);
 	}
 	
 	

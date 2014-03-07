@@ -168,8 +168,7 @@ public class TaxFormula {
 		return taxes;
 	}
 
-	public static int calculateTaxRecalculation(Period predessesor,
-			Period current) {
+	public static int calculateTaxRecalculation(Period current) {
 		int taxes = 0;
 		double taxA = (current.getTaxableProfitAfterLossCarryback() - 8354d) / 10000;
 		double taxB = (current.getTaxableProfitAfterLossCarryback() - 13469d) / 10000;
@@ -200,7 +199,10 @@ public class TaxFormula {
 		return taxes;
 	}
 
-	public static int calculateTaxRefund(Period predesessor, Period current) {
+	/**
+	 * Tax refund of the current (!) period is computed from the predecessor period
+	 */
+	public static int calculateTaxRefund(Period predesessor) {
 		return predesessor.getTaxes() - predesessor.getTaxRecalculation();
 	}
 
@@ -251,10 +253,8 @@ public class TaxFormula {
 		current.setTaxes(calculateTaxes(current));
 		current.setTaxableProfitAfterLossCarryback(TaxFormula
 				.calculateTaxesAfterLossCarryback(current, successor));
-		current.setTaxRecalculation(calculateTaxRecalculation(predesseccor,
-				current));
-		current.setTaxRefund(TaxFormula.calculateTaxRefund(predesseccor,
-				current));
+		current.setTaxRecalculation(calculateTaxRecalculation(current));
+		current.setTaxRefund(TaxFormula.calculateTaxRefund(predesseccor));
 		current.setPeriodMoney(predesseccor.getPeriodMoney()
 				+ current.getIncomeAndInteresst() - current.getTaxes()
 				+ current.getTaxRefund());
@@ -262,6 +262,62 @@ public class TaxFormula {
 		current.setNotUsedLossCarryforward(calculateNotusedLossCarryforward(
 				predesseccor, current));
 	}
+	
+	
+	/**
+	 * Recalculate (and update) the outcome of a current period with all fields, which the outcome is
+	 * dependent on. This includes also the update of some fields (the taxes) of the predecessor period.
+	 * 
+	 * Mind that the outcome of the current period is not dependent on the taxable profit after loss carryback
+	 * and tax recalculation of the current period. Thus, those are NOT updated.
+	 * 
+	 * You are assumed to have the decision and the loss carryback set to allowed values before calling
+	 * this method. Also usually you will have the interest set before calling this method. However, you
+	 * can also decide to recompute it.
+	 * 
+	 * To understand the effect of the taxes also read the comments of calculateMaximumLosscarryback
+	 * and calculateTaxesAfterLossCarryback. The facit is: although it might look so, there is no circular
+	 * dependency between the periods.
+	 * 
+	 * @param predecessor
+	 *            the previous period
+	 * @param current
+	 *            the current period
+	 * @param recalculateInterest
+	 *            whether to recompute the interest of the current period
+	 * @param interestRate
+	 *            only needed if recalculateInterest==true
+	 * @param recalculateMaxLossCarryback
+	 *            whether to recompute the maxLossCarryback of the current period
+	 */
+	public static void recalculatePeriodMoney(Period current, Period predecessor, boolean recalculateInterest,
+			float interestRate, boolean recalculateMaxLossCarryback) {
+		// stuff that needs to be updated on the predecessor
+		predecessor.setTaxableProfitAfterLossCarryback(TaxFormula
+				.calculateTaxesAfterLossCarryback(predecessor, current));
+		// TODO need to recompute aR_t and bR_t of the predecessor before the following call
+		predecessor.setTaxRecalculation(calculateTaxRecalculation(predecessor));
+		
+		// update the current period
+		if (recalculateInterest)
+			updateInterest(current, predecessor, interestRate);
+		if (recalculateMaxLossCarryback)
+			current.setMaximumLoss(calculateMaximumLosscarryback(predecessor, current));
+		current.setTaxableProfit(calculateTaxableProfit(predecessor, current));
+		current.setTaxA(calculateTaxA(current));
+		current.setTaxB(calculateTaxB(current));
+		current.setTaxes(calculateTaxes(current));
+		
+		
+		current.setTaxRefund(TaxFormula.calculateTaxRefund(predecessor));
+		current.setPeriodMoney(predecessor.getPeriodMoney()
+				+ current.getIncomeAndInteresst() - current.getTaxes()
+				+ current.getTaxRefund());
+		current.setLossCarryforward(calculatelossCarryForward(current));
+		current.setNotUsedLossCarryforward(calculateNotusedLossCarryforward(
+				predecessor, current));
+	}
+	
 
 	/**
 	 * Set the interest (Zinsen) of the current period. It depends on the outcome

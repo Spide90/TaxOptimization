@@ -40,10 +40,10 @@ public class SettingsFrame extends JFrame {
 		properties = new Properties();
 		try {
 			properties.load(new FileInputStream("etc/TaxOptimization.properties"));
+			init();
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(this, "Unable to find properties file " + e.getMessage());
 		}
-		init();
 	}
 	
 	private void init() {

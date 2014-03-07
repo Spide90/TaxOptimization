@@ -16,7 +16,7 @@ public class ParticleVelocity {
 	 * Generates a new random ParticleVelocity
 	 * @param periods Periods of Particle swarm. the periods already have to have the correct decisions set !!!
 	 */
-	public ParticleVelocity(List<Period> periods, float interestRatey) {
+	public ParticleVelocity(List<Period> periods) {
 		// periods[0] does only contain the input money and does not need to be optimized, so values at the zero position are not used.
 		// however we include them into the arrays to have less of -1 / +1 computations with the period indices
 		decisionVelocities = new float[periods.size()];

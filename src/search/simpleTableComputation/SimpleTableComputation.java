@@ -37,10 +37,22 @@ public class SimpleTableComputation extends Search {
 		do {
 			// compute the table
 			TaxFormula.updatePeriodsStartingAt(periods, interesstRate, index-1); // -1 because the predecessor also needs to be
-			// recomputed because its outcome also depends on the fixed loss carryback. The handling for index 0 (dummy period) is correctly handled.
+			// recomputed because its tax recomputation depends on the fixed loss carryback. The handling for index 0 (dummy period) is correctly handled.
 			index = fixLossCarryBacks();
 			showHint |= (index!=-1); // needed to fix some loss carryback
 		} while(index != -1);
+		
+	/*	for (int i=1; i<periods.size(); ++i) {
+			Period current = periods.get(i);
+			Period predecessor = periods.get(i-1);
+			TaxFormula.updateInterest(current, predecessor, interesstRate);
+			current.setMaximumLoss(TaxFormula.calculateMaximumLosscarryback(predecessor, current));
+			if (current.getLossCarryback() < current.getMaximumLossCarryback()) { // loss carrybacks are negative
+				current.setLossCarryback(current.getMaximumLossCarryback());
+				showHint=true;
+			}
+			TaxFormula.recalculatePeriodMoney(current, predecessor, false, interesstRate, false);
+		}*/
 		
 		gui.updatePeriodTable(periods);
 		if (drawPlots) {
