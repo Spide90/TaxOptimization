@@ -128,4 +128,19 @@ public class InputTableModell extends AbstractTableModel {
 		}
 		fireTableStructureChanged();
 	}
+	
+	/**
+	 * all lists need to have the same length.
+	 * decisions and carrybacks may be null
+	 */
+	public void setValues(List<Integer> incomes, List<Integer> decisions, List<Integer> carrybacks) {
+		updatePeriodNumber(0); // delete all
+		updatePeriodNumber(incomes.size());
+		this.incomes = incomes;
+		if (decisions!=null)
+			this.decisions = decisions;
+		if (carrybacks!=null)
+			this.lossCarryback = carrybacks;
+		fireTableStructureChanged();
+	}
 }

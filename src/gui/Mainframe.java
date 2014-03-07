@@ -54,7 +54,7 @@ public class Mainframe extends JFrame{
 	
 	public Mainframe() {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setPreferredSize(new Dimension(500, 200));
+		setPreferredSize(new Dimension(500, 235));
 		setTitle("Super R�cktr�ger");
 		init();
 		pack();
@@ -224,11 +224,21 @@ public class Mainframe extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
+				new ImportFrame(Mainframe.this);
 			}
 		};
 		return importActionListener;
+	}
+	
+	/**
+	 * lists have to have the same size.
+	 * decisions and carrybacks may be null.
+	 */
+	public void importValues(float interestRate, int startMoney, List<Integer> incomes, List<Integer> decisions, List<Integer> carrybacks) {
+		fieldInterestRate.setText(String.valueOf(interestRate));
+		fieldStartMoney.setText(String.valueOf(startMoney));
+		fieldPeriods.setValue(incomes.size());
+		inputTableModell.setValues(incomes, decisions, carrybacks);
 	}
 	
 	private ActionListener settingsAction() {
