@@ -171,6 +171,8 @@ public class TaxFormula {
 	public static int calculateTaxRecalculation(Period predessesor,
 			Period current) {
 		int taxes = 0;
+		double taxA = (current.getTaxableProfitAfterLossCarryback() - 8354d) / 10000;
+		double taxB = (current.getTaxableProfitAfterLossCarryback() - 13469d) / 10000;
 		if (current.getDecision().equals(Decision.DIVIDED)) {
 			taxes = (int) Math.ceil(0.25 * current.getInteresst());
 		}
@@ -181,13 +183,12 @@ public class TaxFormula {
 		}
 		if (current.getTaxableProfitAfterLossCarryback() >= 8355
 				&& current.getTaxableProfitAfterLossCarryback() <= 13469) {
-			taxes += (int) Math.ceil((974.58 * current.getTaxA() + 1.400) * current
-					.getTaxA());
+			taxes += (int) Math.ceil((974.58 * current.getTaxA() + 1.400) * taxA);
 		}
 		if (current.getTaxableProfitAfterLossCarryback() >= 13470
 				&& current.getTaxableProfitAfterLossCarryback() <= 52881) {
-			taxes += (int) Math.ceil((228.74 * current.getTaxB() + 2397)
-					* current.getTaxB() + 971);
+			taxes += (int) Math.ceil((228.74 * taxB + 2397)
+					* taxB + 971);
 		}
 		if (current.getTaxableProfitAfterLossCarryback() >= 52882
 				&& current.getTaxableProfitAfterLossCarryback() <= 250730) {
@@ -305,38 +306,38 @@ public class TaxFormula {
 
 	// formula tests
 	//
-//	public static void main(String[] args) {
-//		Period p0 = new Period(0, 0, 0, Decision.SHARED, 0);
-//		p0.setPeriodMoney(600000);
-//		Period p1 = new Period(1, 100000, (int) (p0.getPeriodMoney() * 0.1),
-//				Decision.DIVIDED, 0);
-//		Period p2 = new Period(2, -50000, 0, Decision.DIVIDED, -10000);
-//		Period p3 = new Period(3, 100000, 0, Decision.DIVIDED, 0);
-//		Period p4 = new Period(4, 100000, 0, Decision.SHARED, 0);
-//		Period p5 = new Period(5, -100000, 0, Decision.DIVIDED, -100000);
-//		Period p6 = new Period(6, 100000, 0, Decision.DIVIDED, 0);
-//
-//		calculatePeriod(p0, p1, p2);
-//		System.out.println("period 1: " + p1.getPeriodMoney());
-//
-//		p2.setInteresst((int) (p1.getPeriodMoney() * 0.1));
-//		calculatePeriod(p1, p2, p3);
-//		System.out.println("period 2: " + p2.getPeriodMoney());
-//
-//		p3.setInteresst((int) (p2.getPeriodMoney() * 0.1));
-//		calculatePeriod(p2, p3, p4);
-//		System.out.println("period 3: " + p3.getPeriodMoney());
-//
-//		p4.setInteresst((int) (p3.getPeriodMoney() * 0.1));
-//		calculatePeriod(p3, p4, p5);
-//		System.out.println("period 4: " + p4.getPeriodMoney());
-//
-//		p5.setInteresst((int) (p4.getPeriodMoney() * 0.1));
-//		calculatePeriod(p4, p5, p6);
-//		System.out.println("period 5: " + p5.getPeriodMoney());
-//		
-//		p6.setInteresst((int) (p5.getPeriodMoney() * 0.1));
-//		calculatePeriod(p5, p6, null);
-//		System.out.println("period 6: " + p6.getPeriodMoney());
-//	}
+	public static void main(String[] args) {
+		Period p0 = new Period(0, 0, 0, Decision.SHARED, 0);
+		p0.setPeriodMoney(600000);
+		Period p1 = new Period(1, 0, (int) (p0.getPeriodMoney() * 0.05),
+				Decision.DIVIDED, 0);
+		Period p2 = new Period(2, -150000, 0, Decision.DIVIDED, -27447);
+		Period p3 = new Period(3, 50000, 0, Decision.DIVIDED, 0);
+		Period p4 = new Period(4, 0, 0, Decision.SHARED, 0);
+		Period p5 = new Period(5, -150000, 0, Decision.DIVIDED, 0);
+		Period p6 = new Period(6, 50000, 0, Decision.DIVIDED, 0);
+
+		calculatePeriod(p0, p1, p2);
+		System.out.println("period 1: " + p1.getPeriodMoney());
+
+		p2.setInteresst((int) (p1.getPeriodMoney() * 0.05));
+		calculatePeriod(p1, p2, p3);
+		System.out.println("period 2: " + p2.getPeriodMoney());
+
+		p3.setInteresst((int) (p2.getPeriodMoney() * 0.05));
+		calculatePeriod(p2, p3, p4);
+		System.out.println("period 3: " + p3.getPeriodMoney());
+
+		p4.setInteresst((int) (p3.getPeriodMoney() * 0.05));
+		calculatePeriod(p3, p4, p5);
+		System.out.println("period 4: " + p4.getPeriodMoney());
+
+		p5.setInteresst((int) (p4.getPeriodMoney() * 0.05));
+		calculatePeriod(p4, p5, p6);
+		System.out.println("period 5: " + p5.getPeriodMoney());
+		
+		p6.setInteresst((int) (p5.getPeriodMoney() * 0.05));
+		calculatePeriod(p5, p6, null);
+		System.out.println("period 6: " + p6.getPeriodMoney());
+	}
 }
