@@ -23,22 +23,18 @@ public class ParticlePosition {
 		// however we include them into the arrays to have less of -1 / +1 computations with the period indices
 		decisions = new float[periods.size()];
 		carrybacks = new float[periods.size()];
-		//set the decisions first, because the carrybacks are dependent on max loss carryback which depend on the decisions
+		// set the decisions and carrybacks
 		for (int i=1; i<periods.size(); ++i) {
+			Period current = periods.get(i);
+			Period predecessor = periods.get(i-1);
 			decisions[i] = ParticleSwarm.random.nextFloat(); // between 0 and 1
-			periods.get(i).setDecision(decisions[i]);
+			current.setDecision(decisions[i]);
+			TaxFormula.updateInterest(current, predecessor, interestRate);
+			current.setMaximumLoss(TaxFormula.calculateMaximumLosscarryback(predecessor, current));
+			carrybacks[i] = ParticleSwarm.random.nextFloat() * current.getMaximumLossCarryback(); // between 0 and max loss carryback
+			current.setLossCarryback(Math.round(carrybacks[i]));
+			TaxFormula.recalculatePeriodMoney(current, predecessor, false, interestRate, false);
 		}
-		// set the carrybacks
-		for (int i=1; i<periods.size(); ++i) {
-			// TODO vor berechnung des max loss carrybacks interest setzen
-			int maxLossCarryback = TaxFormula.calculateMaximumLosscarryback(periods.get(i-1), periods.get(i));
-			carrybacks[i] = ParticleSwarm.random.nextFloat() * maxLossCarryback; // between 0 and max loss carryback
-			periods.get(i).setLossCarryback(Math.round(carrybacks[i]));
-			// tax refund in vor periode neu berechnen, da dies aktuelle periode beeinflusst
-			// nach setzen des loss carrybacks periode berechnen
-		}
-		// compute the outcome with those setting
-		TaxFormula.updatePeriods(periods, interestRate);
 		outcome = periods.get(periods.size()-1).getPeriodMoney();
 	}
 	
@@ -89,30 +85,31 @@ public class ParticlePosition {
 	 * @return true if the best position has changed
 	 */
 	public void updatePosition(List<Period> periods, float interestRate, ParticleVelocity velocity) {
-		// update the decisions first because max carryback depends on the decisions
+		// update the decisions and carrybacks
 		for (int i=1; i<periods.size(); ++i) {
+			Period current = periods.get(i);
+			Period predecessor = periods.get(i-1);
+			
 			decisions[i]+=velocity.getDecisionVelocity(i);
 			if (decisions[i] > 1.0f)
 				decisions[i] = 1.0f;
 			else if (decisions[i] < 0.0f)
 				decisions[i] = 0.0f;
-			periods.get(i).setDecision(decisions[i]);
-		}
-		// update the carrybacks
-		for (int i=1; i<periods.size(); ++i) {
+			current.setDecision(decisions[i]);
+			
+			TaxFormula.updateInterest(current, predecessor, interestRate);
+			current.setMaximumLoss(TaxFormula.calculateMaximumLosscarryback(predecessor, current));
+			
 			carrybacks[i]+=velocity.getCarrybackVelocity(i);
 			if (carrybacks[i] > 0)
 				carrybacks[i] = 0;
 			else {
-				int maxLossCarryback = TaxFormula.calculateMaximumLosscarryback(periods.get(i-1), periods.get(i));
-				if (carrybacks[i] < maxLossCarryback) // maxLossCarryback is <= 0
-					carrybacks[i] = maxLossCarryback;
+				if (carrybacks[i] < current.getMaximumLossCarryback()) // maxLossCarryback is <= 0
+					carrybacks[i] = current.getMaximumLossCarryback();
 			}
-			periods.get(i).setLossCarryback(Math.round(carrybacks[i]));
+			current.setLossCarryback(Math.round(carrybacks[i]));
+			TaxFormula.recalculatePeriodMoney(current, predecessor, false, interestRate, false);
 		}
-		// recompute outcome
-		TaxFormula.updatePeriods(periods, interestRate);
 		outcome = periods.get(periods.size()-1).getPeriodMoney();
 	}
-	
 }

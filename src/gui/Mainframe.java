@@ -57,7 +57,7 @@ public class Mainframe extends JFrame {
 	public Mainframe() {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setPreferredSize(new Dimension(500, 235));
-		setTitle("Super Rï¿½cktrï¿½ger");
+		setTitle("Super Rückträger");
 		init();
 		pack();
 		setLocationRelativeTo(null);
@@ -93,7 +93,7 @@ public class Mainframe extends JFrame {
 		fieldPeriods = new JSpinner();
 		fieldPeriods.addChangeListener(periodChange());
 		fieldPeriods.setPreferredSize(new Dimension(100, 25));
-		fieldPeriods.setModel(new SpinnerNumberModel(3, 3, 25, 1));
+		fieldPeriods.setModel(new SpinnerNumberModel(3, 3, 1000, 1));
 		layout.setConstraints(fieldPeriods, gbc);
 		add(fieldPeriods);
 
@@ -212,7 +212,7 @@ public class Mainframe extends JFrame {
 						FileOutputStream outputStream = new FileOutputStream(
 								file);
 						outputStream
-								.write("particleswarm_phi_g=0.35000000000000003\nparticleswarm_phi_p=0.9\nparticleswarm_iterations=1070\nhillclimb_stepsize=1.011\nhillclimb_completeOptimization=true\nparticleswarm_omega=0.89\nmontecarlo_iterations=10700\nparticleswarm_particles=170"
+								.write("particleswarm_phi_g=0.35000000000000003\nparticleswarm_phi_p=0.9\nparticleswarm_iterations=100\nhillclimb_stepsize=1.011\nhillclimb_completeOptimization=true\nparticleswarm_omega=0.89\nmontecarlo_iterations=10000\nparticleswarm_particles=1000"
 										.getBytes());
 						outputStream.close();
 						properties.load(new FileInputStream(

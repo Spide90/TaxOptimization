@@ -50,8 +50,12 @@ public class SimpleTableComputation extends Search {
 			gui.updatePlots(null, null, null, null, null);
 		}
 		
-		if (showHint)
+		if (showHint) {
+			gui.printDebugMessage("One of your supplied carrybacks was smaller than max loss carryback. It has been fixed automatically.");
 			JOptionPane.showMessageDialog(gui, "You supplied a loss carryback smaller than the allowed maximum loss caryyback. The value has been adapted.",
 					"Warning!", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			gui.printDebugMessage("All supplied carrybacks were okay.");
+		}
 	}
 }

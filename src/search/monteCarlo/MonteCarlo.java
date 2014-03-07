@@ -53,6 +53,7 @@ public class MonteCarlo extends Search {
 				outcomes.add(newTry.getOutcome());
 		}
 		updateGui();
+		gui.printDebugMessage("Monte Carlo finished after "+numberOfIterations+" iterations with result: "+bestResult.getOutcome());
 		if (drawPlots) {
 			gui.setTitle("Monte Carlo - drawing plots...");
 			gui.updatePlots(outcomes, PlotType.BarPlot,  "Outcome distribution", "Outcome", "Occurence");

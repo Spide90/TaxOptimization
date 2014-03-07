@@ -45,7 +45,7 @@ public class ParticleSwarm extends Search{
 		if (drawPlots) {
 			plotBestOutcomesPerIteration = new DataTable(Integer.class, Integer.class);
 		}
-		gui = new AlgorithmFrame(periods, "Particle Swarm");
+		gui = new AlgorithmFrame(periods, "Particle Swarm - calculating..");
 		Properties properties = new Properties();
 		try {
 			properties.load(new FileInputStream("etc/TaxOptimization.properties"));
@@ -62,15 +62,13 @@ public class ParticleSwarm extends Search{
 		initialization();
 		if (drawPlots)
 			plotBestOutcomesPerIteration.add(0, globalBestPosition.getOutcome());
-		//System.out.println("Best outcome after initialization: "+globalBestPosition.getOutcome());
 		gui.printDebugMessage("Best outcome after initialization: "+globalBestPosition.getOutcome());
 		for (int i=0; i<numberOfIterations; ++i) {
 			iterationStep();
-			//System.out.println("Best outcome after iteration "+(i+1)+": "+globalBestPosition.getOutcome());
-			gui.appendDebugMessage("Best outcome after iteration "+(i+1)+": "+globalBestPosition.getOutcome());
 			if (drawPlots)
 				plotBestOutcomesPerIteration.add(i+1, globalBestPosition.getOutcome());
 		}
+		gui.appendDebugMessage("Best outcome after last iteration: "+globalBestPosition.getOutcome());
 		updateGui();
 		if (drawPlots) {
 			gui.setTitle("Particle Swarm - drawing plots...");

@@ -63,6 +63,7 @@ public class ImportFrame extends JFrame {
 		init();
 		pack();
 		checkAllCoordinateInputs();
+		this.setTitle("Import");
 		setVisible(true);
 		checkAllCoordinateInputs();
 	}
