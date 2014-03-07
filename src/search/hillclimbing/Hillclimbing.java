@@ -4,6 +4,7 @@ import gui.AlgorithmFrame;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import misc.Decision;
 import misc.Period;
@@ -12,7 +13,7 @@ import search.Search;
 
 public class Hillclimbing extends Search {
 	
-	//private enum Direction { UP, DOWN };
+	private enum Direction { UP, DOWN };
 	
 	private AlgorithmFrame frame;
 	private List<Period> periods;
@@ -20,15 +21,17 @@ public class Hillclimbing extends Search {
 	
 	private List<Period> lossPeriods;
 	private double stepSize;
-	//private int tries = 10;
+	private int tries = 10;
 	
 	private boolean drawPlots;
+	private boolean completeOptimization = true;
 	
-	public Hillclimbing(List<Period> periods, double interesstRate, boolean drawPlots, double stepSize) {
+	public Hillclimbing(List<Period> periods, double interesstRate, boolean drawPlots, double stepSize, boolean completeOptimization) {
 		this.periods = periods;
 		this.interesstRate = interesstRate;
 		this.drawPlots = drawPlots;
 		this.stepSize = stepSize;
+		this.completeOptimization = completeOptimization;
 		frame = new AlgorithmFrame(periods, "Hillclimbing");
 		lossPeriods = new LinkedList<>();
 	}
@@ -40,8 +43,13 @@ public class Hillclimbing extends Search {
 		for (int i = 0; i < periods.size(); i++) {
 			if (periods.get(i).getIncome() < 0) {
 				lossPeriods.add(periods.get(i));
+				if (completeOptimization) {
 				optimizeLoss();
-				//optimizeLoss(predeseccor, periods.get(i), successor);
+				} else {
+					Period predeseccor = i == 0 ? new Period(-1, 0, Decision.SHARED, 0) : periods.get(i - 1);
+					Period successor = i == periods.size() - 1 ? new Period(periods.size(), 0, Decision.SHARED, 0) : periods.get(i + 1);
+					optimizeLoss(predeseccor, periods.get(i), successor);
+				}
 			}
 		}
 		if (drawPlots) {
@@ -90,43 +98,42 @@ public class Hillclimbing extends Search {
 		}
 	}
 	
-//	private void optimizeLoss(Period predeseccor, Period current,
-//			Period successor) {
-//		if (current.getMaximumLossCarryback() == 0) return;
-//		Random random = new Random();
-//		int bestValue = 0;
-//		frame.printDebugMessage("starting los optimization for " + current.getTime());
-//		for (int i = 0; i < tries; i++) {
-//			int position = -1 * random.nextInt(-1 * current.getMaximumLossCarryback());
-//			Direction direction = random.nextBoolean() ? Direction.UP : Direction.DOWN;
-//			current.setLossCarryback(position);
-//			TaxFormula.calculatePeriod(predeseccor, current, successor);
-//			if (current.getPeriodMoney() > bestValue) {
-//				bestValue = current.getPeriodMoney();
-//				frame.printDebugMessage("new best value: " + bestValue);
-//			}
-//			plotBestOutcomesPerIteration.add(0, bestValue);
-//			boolean finished = false;
-//			while (!finished) {
-//				if (direction.equals(Direction.UP)) {
-//					position += position * stepSize;
-//				} else {
-//					position -= position * stepSize;
-//				}
-//				if (position < current.getMaximumLossCarryback() || position >= 0) return;
-//				current.setLossCarryback(position);
-//				TaxFormula.calculatePeriod(predeseccor, current, successor);
-//				if (current.getPeriodMoney() < bestValue) {
-//					finished = true;
-//				} else {
-//					bestValue = current.getPeriodMoney();
-//					frame.printDebugMessage("new best value: " + bestValue);
-//				}
-//				frame.updatePeriodTable(periods);
-////				frame.updatePlots(plotBestOutcomesPerIteration);
-//			}
-//		}
-//	}
+	private void optimizeLoss(Period predeseccor, Period current,
+			Period successor) {
+		if (current.getMaximumLossCarryback() == 0) return;
+		Random random = new Random();
+		int bestValue = 0;
+		frame.printDebugMessage("starting los optimization for " + current.getTime());
+		for (int i = 0; i < tries; i++) {
+			int position = -1 * random.nextInt(-1 * current.getMaximumLossCarryback());
+			Direction direction = random.nextBoolean() ? Direction.UP : Direction.DOWN;
+			current.setLossCarryback(position);
+			TaxFormula.calculatePeriod(predeseccor, current, successor);
+			if (current.getPeriodMoney() > bestValue) {
+				bestValue = current.getPeriodMoney();
+				frame.printDebugMessage("new best value: " + bestValue);
+			}
+			boolean finished = false;
+			while (!finished) {
+				if (direction.equals(Direction.UP)) {
+					position += position * stepSize;
+				} else {
+					position -= position * stepSize;
+				}
+				if (position < current.getMaximumLossCarryback() || position >= 0) return;
+				current.setLossCarryback(position);
+				TaxFormula.calculatePeriod(predeseccor, current, successor);
+				if (current.getPeriodMoney() < bestValue) {
+					finished = true;
+				} else {
+					bestValue = current.getPeriodMoney();
+					frame.printDebugMessage("new best value: " + bestValue);
+				}
+				frame.updatePeriodTable(periods);
+//				frame.updatePlots(plotBestOutcomesPerIteration);
+			}
+		}
+	}
 
 	public void setDecisions() {
 		for (int i = 1; i < periods.size(); i++) {
