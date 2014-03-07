@@ -162,7 +162,7 @@ public class SettingsFrame extends JFrame {
 	
 	private void saveAction() {
 		properties.put("hillclimb_stepsize", String.valueOf(hcStepSize.getValue()));
-		properties.put("hillclimb_completeOptimization", hcCompleteOptimization.isSelected());
+		properties.put("hillclimb_completeOptimization", String.valueOf(hcCompleteOptimization.isSelected()));
 		properties.put("montecarlo_iterations", String.valueOf(mcIterations.getValue()));
 		properties.put("particleswarm_iterations", String.valueOf(psIterations.getValue()));
 		properties.put("particleswarm_particles", String.valueOf(psparticles.getValue()));
