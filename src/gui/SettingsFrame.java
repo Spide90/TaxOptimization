@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,6 +26,7 @@ public class SettingsFrame extends JFrame {
 	private Properties properties;
 	
 	private JSpinner hcStepSize;
+	private JCheckBox hcCompleteOptimization;
 	private JSpinner mcIterations;
 	private JSpinner psIterations;
 	private JSpinner psparticles;
@@ -61,31 +63,36 @@ public class SettingsFrame extends JFrame {
 		add(labelHcStepSize);
 		
 		gbc.gridy = 1;
+		JLabel labelHcCompleteOptimization = new JLabel("Hillclimb complete Optimization");
+		layout.setConstraints(labelHcCompleteOptimization, gbc);
+		add(labelHcCompleteOptimization);
+		
+		gbc.gridy = 2;
 		JLabel labelMcIterations = new JLabel("Monte Carlo Iterations");
 		layout.setConstraints(labelMcIterations, gbc);
 		add(labelMcIterations);
 		
-		gbc.gridy = 2;
+		gbc.gridy = 3;
 		JLabel labelPsIterations = new JLabel("Particle Swarm Iterations");
 		layout.setConstraints(labelPsIterations, gbc);
 		add(labelPsIterations);
 		
-		gbc.gridy = 3;
+		gbc.gridy = 4;
 		JLabel labelPsParticles = new JLabel("Particle Swarm particles");
 		layout.setConstraints(labelHcStepSize, gbc);
 		add(labelPsParticles);
 		
-		gbc.gridy = 4;
+		gbc.gridy = 5;
 		JLabel labelPsPhiP = new JLabel("Particle Swarm phi p");
 		layout.setConstraints(labelPsPhiP, gbc);
 		add(labelPsPhiP);
 
-		gbc.gridy = 5;
+		gbc.gridy = 6;
 		JLabel labelPsPhiG = new JLabel("Particle Swarm phi g");
 		layout.setConstraints(labelPsPhiG, gbc);
 		add(labelPsPhiG);
 		
-		gbc.gridy = 6;
+		gbc.gridy = 7;
 		JLabel labelPsOmega = new JLabel("Particle Swarm omega");
 		layout.setConstraints(labelPsOmega, gbc);
 		add(labelPsOmega);
@@ -99,37 +106,43 @@ public class SettingsFrame extends JFrame {
 		add(hcStepSize);
 	
 		gbc.gridy = 1;
+		hcCompleteOptimization = new JCheckBox("", Boolean.valueOf(properties.getProperty("hillclimb_completeOptimization")));
+		layout.setConstraints(hcCompleteOptimization, gbc);
+		add(hcCompleteOptimization);
+		
+		
+		gbc.gridy = 2;
 		mcIterations = new JSpinner(new SpinnerNumberModel((int) Integer.valueOf(properties.get("montecarlo_iterations").toString()), 1, 100000, 100));
 		layout.setConstraints(mcIterations, gbc);
 		add(mcIterations);
 		
-		gbc.gridy = 2;
+		gbc.gridy = 3;
 		psIterations = new JSpinner(new SpinnerNumberModel((int) Integer.valueOf(properties.get("particleswarm_iterations").toString()), 1, 100000, 10));
 		layout.setConstraints(psIterations, gbc);
 		add(psIterations);
 		
-		gbc.gridy = 3;
+		gbc.gridy = 4;
 		psparticles = new JSpinner(new SpinnerNumberModel((int) Integer.valueOf(properties.get("particleswarm_particles").toString()), 1, 100000, 10));
 		layout.setConstraints(psparticles, gbc);
 		add(psparticles);
 		
-		gbc.gridy = 4;
+		gbc.gridy = 5;
 		psPhiP = new JSpinner(new SpinnerNumberModel((double) Double.valueOf(properties.get("particleswarm_phi_p").toString()), 0.1, 1, 0.1));
 		layout.setConstraints(psPhiP, gbc);
 		add(psPhiP);
 		
-		gbc.gridy = 5;
+		gbc.gridy = 6;
 		psPhiG = new JSpinner(new SpinnerNumberModel((double) Double.valueOf(properties.get("particleswarm_phi_g").toString()), 0.1, 1, 0.01));
 		layout.setConstraints(psPhiG, gbc);
 		add(psPhiG);
 		
-		gbc.gridy = 6;
+		gbc.gridy = 7;
 		psOmega = new JSpinner(new SpinnerNumberModel((double) Double.valueOf(properties.get("particleswarm_omega").toString()), 0.1, 1, 0.01));
 		layout.setConstraints(psOmega, gbc);
 		add(psOmega);
 		
 		gbc.gridx = 0;
-		gbc.gridy = 7;
+		gbc.gridy = 8;
 		gbc.gridwidth = 2;
 		
 		buttonSave = new JButton("Save");
@@ -149,6 +162,7 @@ public class SettingsFrame extends JFrame {
 	
 	private void saveAction() {
 		properties.put("hillclimb_stepsize", String.valueOf(hcStepSize.getValue()));
+		properties.put("hillclimb_completeOptimization", hcCompleteOptimization.isSelected());
 		properties.put("montecarlo_iterations", String.valueOf(mcIterations.getValue()));
 		properties.put("particleswarm_iterations", String.valueOf(psIterations.getValue()));
 		properties.put("particleswarm_particles", String.valueOf(psparticles.getValue()));

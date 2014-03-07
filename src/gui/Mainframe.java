@@ -196,7 +196,8 @@ public class Mainframe extends JFrame{
 				switch (comboBoxAlgorithm.getSelectedItem().toString()) {
 				case "Hillclimbing":
 					double stepSize = Double.valueOf(properties.get("hillclimb_stepsize").toString());
-					search = new Hillclimbing(periods, Double.valueOf(fieldInterestRate.getText()), true, stepSize);
+					boolean completeOptimization = Boolean.valueOf(properties.getProperty("hillclimb_completeOptimization"));
+					search = new Hillclimbing(periods, Double.valueOf(fieldInterestRate.getText()), true, stepSize, completeOptimization);
 					break;
 				case "Monte Carlo":
 					int iterations = Integer.valueOf(properties.get("montecarlo_iterations").toString());

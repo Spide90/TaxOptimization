@@ -8,11 +8,16 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -52,6 +57,7 @@ public class AlgorithmFrame extends JFrame {
 	private PeriodTableModell periodTableModell;
 	private JTextPane console;
 	private JButton buttonShowConsole;
+	private JButton buttonExport;
 	protected JPanel plotsPanel;
 
 	protected final Dimension preferredPlotSize = new Dimension(200, 150);
@@ -68,10 +74,6 @@ public class AlgorithmFrame extends JFrame {
 		setVisible(true);
 	}
 
-	// TODO
-	// scrollpane for periods
-	// check input fields
-
 	private void init() {
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
@@ -82,6 +84,7 @@ public class AlgorithmFrame extends JFrame {
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.gridwidth = 2;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
@@ -96,6 +99,7 @@ public class AlgorithmFrame extends JFrame {
 
 		gbc.gridy = 1;
 		gbc.fill = GridBagConstraints.NONE;
+		gbc.gridwidth = 1;
 		gbc.weightx = 0;
 		gbc.weighty = 0;
 		buttonShowConsole = new JButton("Console");
@@ -103,17 +107,24 @@ public class AlgorithmFrame extends JFrame {
 		layout.setConstraints(buttonShowConsole, gbc);
 		add(buttonShowConsole);
 
+		gbc.gridx = 1;
+		buttonExport = new JButton("Export");
+		buttonExport.addActionListener(actionExport());
+		layout.setConstraints(buttonExport, gbc);
+		add(buttonExport);
+		
+		gbc.gridx = 0;
 		gbc.gridy = 2;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
-		gbc.gridwidth = 2;
+		gbc.gridwidth = 3;
 		gbc.fill = GridBagConstraints.BOTH;
 		console = new JTextPane();
 		console.setVisible(false);
 		layout.setConstraints(console, gbc);
 		add(console);
 
-		gbc.gridx = 1;
+		gbc.gridx = 2;
 		gbc.gridy = 0;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 2;
@@ -135,6 +146,32 @@ public class AlgorithmFrame extends JFrame {
 			}
 		};
 		return actionShowConsole;
+	}
+	
+	private ActionListener actionExport() {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				if (fileChooser.showDialog(AlgorithmFrame.this, "save") == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+					try {
+						FileOutputStream output = new FileOutputStream(file);
+						for (int row = 0; row < periodTableModell.getRowCount(); row++) {
+							for (int col = 0; col < periodTableModell.getColumnCount(); col++) {
+								output.write(periodTableModell.getValueAt(row, col).toString().getBytes());
+								output.write(",".getBytes());
+							}
+							output.write("\n".getBytes());
+						}
+						output.close();
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(AlgorithmFrame.this, e1.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);;
+					}
+				}
+			}
+		};
 	}
 
 	/**
