@@ -182,7 +182,7 @@ public class TaxFormula {
 		}
 		if (current.getTaxableProfitAfterLossCarryback() >= 8355
 				&& current.getTaxableProfitAfterLossCarryback() <= 13469) {
-			taxes += (int) Math.ceil((974.58 * current.getTaxA() + 1.400) * taxA);
+			taxes += (int) Math.ceil((974.58 * taxA + 1.400) * taxA);
 		}
 		if (current.getTaxableProfitAfterLossCarryback() >= 13470
 				&& current.getTaxableProfitAfterLossCarryback() <= 52881) {
@@ -359,7 +359,7 @@ public class TaxFormula {
 		}
 	}
 	
-
+/*
 	// formula tests
 	//
 	public static void main(String[] args) {
@@ -395,5 +395,5 @@ public class TaxFormula {
 		p6.setInteresst((int) (p5.getPeriodMoney() * 0.05));
 		calculatePeriod(p5, p6, null);
 		System.out.println("period 6: " + p6.getPeriodMoney());
-	}
+	}*/
 }

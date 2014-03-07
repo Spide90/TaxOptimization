@@ -186,7 +186,7 @@ public class ImportFrame extends JFrame {
 		gbcRight.gridx = 1;
 		fieldStartMoney = new JTextField();
 		fieldStartMoney.setPreferredSize(new Dimension(150, 25));
-		fieldStartMoney.setText("B1");
+		fieldStartMoney.setText("A2");
 		righPanelLayout.setConstraints(fieldStartMoney, gbcRight);
 		fieldStartMoney.addFocusListener(getFocusListener());
 		rightPanel.add(fieldStartMoney);
@@ -202,7 +202,7 @@ public class ImportFrame extends JFrame {
 		gbcRight.weightx = 0.5;
 		fieldIncomesFrom = new JTextField();
 		fieldIncomesFrom.setPreferredSize(new Dimension(150, 25));
-		fieldIncomesFrom.setText("C1");
+		fieldIncomesFrom.setText("A3");
 		righPanelLayout.setConstraints(fieldIncomesFrom, gbcRight);
 		fieldIncomesFrom.addFocusListener(getFocusListener());
 		rightPanel.add(fieldIncomesFrom);
@@ -244,7 +244,7 @@ public class ImportFrame extends JFrame {
 		gbcRight.gridx = 1;
 		fieldDecisionsFrom = new JTextField();
 		fieldDecisionsFrom.setPreferredSize(new Dimension(150, 25));
-		fieldDecisionsFrom.setText("D1");
+		fieldDecisionsFrom.setText("A4");
 		righPanelLayout.setConstraints(fieldDecisionsFrom, gbcRight);
 		fieldDecisionsFrom.setEnabled(importDecisionsAndCarrybacks);
 		fieldDecisionsFrom.addFocusListener(getFocusListener());
@@ -259,7 +259,7 @@ public class ImportFrame extends JFrame {
 		gbcRight.gridx = 3;
 		fieldDecisionsTo = new JTextField();
 		fieldDecisionsTo.setPreferredSize(new Dimension(150, 25));
-		fieldDecisionsTo.setText("D3");
+		fieldDecisionsTo.setText("C4");
 		righPanelLayout.setConstraints(fieldDecisionsTo, gbcRight);
 		fieldDecisionsTo.setEnabled(importDecisionsAndCarrybacks);
 		fieldDecisionsTo.addFocusListener(getFocusListener());
@@ -277,7 +277,7 @@ public class ImportFrame extends JFrame {
 		gbcRight.gridx = 1;
 		fieldCarrybacksFrom = new JTextField();
 		fieldCarrybacksFrom.setPreferredSize(new Dimension(150, 25));
-		fieldCarrybacksFrom.setText("E1");
+		fieldCarrybacksFrom.setText("A5");
 		righPanelLayout.setConstraints(fieldCarrybacksFrom, gbcRight);
 		fieldCarrybacksFrom.setEnabled(importDecisionsAndCarrybacks);
 		fieldCarrybacksFrom.addFocusListener(getFocusListener());
@@ -292,7 +292,7 @@ public class ImportFrame extends JFrame {
 		gbcRight.gridx = 3;
 		fieldCarrybacksTo = new JTextField();
 		fieldCarrybacksTo.setPreferredSize(new Dimension(150, 25));
-		fieldCarrybacksTo.setText("E3");
+		fieldCarrybacksTo.setText("C5");
 		righPanelLayout.setConstraints(fieldCarrybacksTo, gbcRight);
 		fieldCarrybacksTo.setEnabled(importDecisionsAndCarrybacks);
 		fieldCarrybacksTo.addFocusListener(getFocusListener());
@@ -475,7 +475,6 @@ public class ImportFrame extends JFrame {
 		try {
 			// set the values
 			Point coord = getCoordinateForString(fieldInterestRate.getText());
-			System.out.println(table[coord.y][coord.x]);
 			float interestRate = Float.valueOf(table[coord.y][coord.x]);
 			coord = getCoordinateForString(fieldStartMoney.getText());
 			int startMoney = Integer.valueOf(table[coord.y][coord.x]);
@@ -496,6 +495,11 @@ public class ImportFrame extends JFrame {
 						JOptionPane.showMessageDialog(this, "For decisions 0 and 1 are the only allowed values.", "ERROR!", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
+				
+				if (incomes.size()!=decisions.size() || decisions.size()!=carrybacks.size()) {
+					JOptionPane.showMessageDialog(this, "You supplied a different amount of incomes / decisions / carrybacks.", "ERROR!", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 			}
 			
 			mainFrame.importValues(interestRate, startMoney, incomes, decisions, carrybacks);
@@ -513,8 +517,8 @@ public class ImportFrame extends JFrame {
 	 * Might throw a number format exception
 	 */
 	private List<Integer> retrieveArea(String from, String to) {
-		Point coordFrom = getCoordinateForString(fieldIncomesFrom.getText());
-		Point coordTo = getCoordinateForString(fieldIncomesTo.getText());
+		Point coordFrom = getCoordinateForString(from);
+		Point coordTo = getCoordinateForString(to);
 		if (coordFrom.x!=coordTo.x && coordFrom.y!=coordTo.y) { // must be aligned along x or y axis
 			JOptionPane.showMessageDialog(this, "Incomes, decisions and carrybacks must be aligned along a row or column.", "ERROR!", JOptionPane.ERROR_MESSAGE);
 			return null;
