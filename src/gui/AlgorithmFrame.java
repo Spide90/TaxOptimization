@@ -55,6 +55,7 @@ public class AlgorithmFrame extends JFrame {
 
 	private JTable periodTable;
 	private PeriodTableModell periodTableModell;
+	private JScrollPane scrollPaneConsole;
 	private JTextPane console;
 	private JButton buttonShowConsole;
 	private JButton buttonExport;
@@ -120,9 +121,11 @@ public class AlgorithmFrame extends JFrame {
 		gbc.gridwidth = 3;
 		gbc.fill = GridBagConstraints.BOTH;
 		console = new JTextPane();
-		console.setVisible(false);
-		layout.setConstraints(console, gbc);
-		add(console);
+		scrollPaneConsole = new JScrollPane(console);
+		scrollPaneConsole.setPreferredSize(new Dimension(300, 200));
+		scrollPaneConsole.setVisible(false);
+		layout.setConstraints(scrollPaneConsole, gbc);
+		add(scrollPaneConsole);
 
 		gbc.gridx = 2;
 		gbc.gridy = 0;
@@ -142,7 +145,7 @@ public class AlgorithmFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				console.setVisible(!console.isVisible());
+				scrollPaneConsole.setVisible(!scrollPaneConsole.isVisible());
 			}
 		};
 		return actionShowConsole;
